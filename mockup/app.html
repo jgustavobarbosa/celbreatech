@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Celbrea Care — Operação</title>
+  <link rel="stylesheet" href="css/celbrea-care.css" />
+  <script src="https://unpkg.com/lucide@0.469.0"></script>
+</head>
+<body data-title-key="meta.appTitle">
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegação">
+      <div class="logo">
+        <a href="index.html"><img src="assets/brand/logo-celbrea.jpg" alt="celbrea" /></a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label" data-i18n="nav.operation">Operação</div>
+        <button class="nav-item active" data-view="celbrea"><i data-lucide="layout-dashboard" class="nav-icon"></i><span data-i18n="nav.celbrea">Dashboard Celbrea</span></button>
+        <button class="nav-item" data-view="torre"><i data-lucide="radar" class="nav-icon"></i><span data-i18n="nav.torre">Torre de controle</span></button>
+        <button class="nav-item" data-view="triagem"><i data-lucide="scan-line" class="nav-icon"></i><span data-i18n="nav.triagem">Nova triagem</span></button>
+        <button class="nav-item" data-view="navegador"><i data-lucide="route" class="nav-icon"></i><span data-i18n="nav.navegador">Fila do navegador</span></button>
+        <button class="nav-item" data-view="paciente"><i data-lucide="user-round" class="nav-icon"></i><span data-i18n="nav.paciente">Ficha do paciente</span></button>
+        <button class="nav-item" data-view="cohorts"><i data-lucide="users" class="nav-icon"></i><span data-i18n="nav.cohorts">Cohorts &amp; recorrência</span></button>
+        <button class="nav-item" data-view="arquivo"><i data-lucide="archive" class="nav-icon"></i><span data-i18n="nav.arquivo">Arquivo</span></button>
+        <button class="nav-item" data-view="mensageria"><i data-lucide="message-square" class="nav-icon"></i><span data-i18n="nav.mensageria">Mensageria</span></button>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label" data-i18n="nav.chapters">Capítulos</div>
+        <button class="nav-item stub" data-view="stub" data-stub="Cadastro"><span class="dot"></span><span data-i18n="nav.c01">01 Cadastro</span></button>
+        <button class="nav-item stub" data-view="stub" data-stub="Vínculo UBS/equipe"><span class="dot"></span><span data-i18n="nav.c02">02 Vínculo</span></button>
+        <button class="nav-item stub" data-view="stub" data-stub="Anamnese estruturada"><span class="dot"></span><span data-i18n="nav.c03">03 Anamnese</span></button>
+        <button class="nav-item stub" data-view="stub" data-stub="Dados clínicos"><span class="dot"></span><span data-i18n="nav.c04">04 Clínicos</span></button>
+        <button class="nav-item stub" data-view="stub" data-stub="Escaneamento QR"><span class="dot"></span><span data-i18n="nav.c05">05 Escaneamento</span></button>
+        <button class="nav-item stub" data-view="stub" data-stub="Triagem térmica A/B"><span class="dot"></span><span data-i18n="nav.c06">06 Triagem</span></button>
+        <button class="nav-item stub" data-view="stub" data-stub="Score &amp; legislação"><span class="dot"></span><span data-i18n="nav.c07">07 Score / lei</span></button>
+        <button class="nav-item stub" data-view="stub" data-stub="Guia de referência"><span class="dot"></span><span data-i18n="nav.c08">08 Referência</span></button>
+        <button class="nav-item stub" data-view="stub" data-stub="Contrareferência BI-RADS"><span class="dot"></span><span data-i18n="nav.c09">09 Contrareferência</span></button>
+        <button class="nav-item stub" data-view="stub" data-stub="Acompanhamento"><span class="dot"></span><span data-i18n="nav.c10">10 Acompanhamento</span></button>
+        <button class="nav-item stub" data-view="stub" data-stub="Mensageria"><span class="dot"></span><span data-i18n="nav.c11">11 Mensageria</span></button>
+        <button class="nav-item stub" data-view="stub" data-stub="Recorrência 6/12m"><span class="dot"></span><span data-i18n="nav.c12">12 Recorrência</span></button>
+        <button class="nav-item stub" data-view="stub" data-stub="Grupos elegíveis"><span class="dot"></span><span data-i18n="nav.c13">13 Grupos</span></button>
+        <button class="nav-item stub" data-view="stub" data-stub="Arquivamento"><span class="dot"></span><span data-i18n="nav.c14">14 Arquivo</span></button>
+        <button class="nav-item stub" data-view="stub" data-stub="Predição / RWE"><span class="dot"></span><span data-i18n="nav.c15">15 Predição</span></button>
+        <button class="nav-item stub" data-view="stub" data-stub="Torre de controle"><span class="dot"></span><span data-i18n="nav.c16">16 Torre</span></button>
+      </div>
+
+      <div class="sidebar-foot">
+        <img src="assets/brand/logo-welwaze-medical.jpg" alt="Welwaze Medical" />
+        <p><span data-i18n="shell.foot">Celbrea Care · UBS Centro · Clarice M.</span></p>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-meta">
+          <strong id="top-title" data-i18n="title.celbrea">Dashboard Celbrea</strong>
+          <span data-i18n="shell.subtitle">Município demonstração · APS integrada · HL7 FHIR</span>
+        </div>
+        <div class="topbar-actions">
+          <div class="lang-switcher" role="group" aria-label="Language">
+            <button type="button" class="lang-btn active" data-lang="pt" title="Português" aria-pressed="true"><span class="flag flag-br"></span><span>PT</span></button>
+            <button type="button" class="lang-btn" data-lang="en" title="English" aria-pressed="false"><span class="flag flag-us"></span><span>EN</span></button>
+            <button type="button" class="lang-btn" data-lang="es" title="Español" aria-pressed="false"><span class="flag flag-es"></span><span>ES</span></button>
+          </div>
+
+          <span class="chip chip-ok"><i data-lucide="activity" class="icon-sm"></i> <span data-i18n="shell.cycle">Ciclo ativo</span></span>
+          <span class="chip"><i data-lucide="building-2" class="icon-sm"></i> <span data-i18n="shell.unit">UBS Centro</span></span>
+          <div class="avatar" title="Ana Navegadora">AN</div>
+        </div>
+      </header>
+
+      <div class="content">
+        <!-- Dashboard Celbrea exclusivo -->
+        <section class="view active" id="view-celbrea" data-title="Dashboard Celbrea">
+          <div class="page-head">
+            <div>
+              <h1>Dashboard Celbrea®</h1>
+              <p data-i18n="dash.lead">Controle operacional do pad, estoque, georreferenciamento e perfil epidemiológico — rede demonstração São Paulo.</p>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <span class="chip chip-info"><span data-i18n="dash.chipSp">SP · Set/2026</span></span>
+              <span class="chip chip-ok"><span data-i18n="dash.chipLots">Lotes válidos</span></span>
+            </div>
+          </div>
+
+          <div class="dash-section">
+            <div class="section-label"><span data-i18n="dash.secControl">Controle · exames · pontos · score</span></div>
+            <div class="grid-4">
+              <div class="stat">
+                <div class="label"><span data-i18n="dash.exams">Exames realizados</span></div>
+                <div class="value">3.842</div>
+                <div class="delta delta-up"><span data-i18n="dash.examsDelta">+312 no mês</span></div>
+              </div>
+              <div class="stat">
+                <div class="label"><span data-i18n="dash.points">Pontos sensores (A/B)</span></div>
+                <div class="value">138k</div>
+                <div class="delta"><span data-i18n="dash.pointsDelta">leituras grid 1–18</span></div>
+              </div>
+              <div class="stat">
+                <div class="label"><span data-i18n="dash.score">Score médio</span></div>
+                <div class="value">41</div>
+                <div class="delta delta-warn"><span data-i18n="dash.scoreDelta">positivos média 76</span></div>
+              </div>
+              <div class="stat">
+                <div class="label"><span data-i18n="dash.units">Unidades ativas SP</span></div>
+                <div class="value">28</div>
+                <div class="delta delta-up"><span data-i18n="dash.unitsDelta">UBS + clínicas</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dash-section grid-2">
+            <div class="panel">
+              <h3><span data-i18n="dash.geoTitle">Georreferenciamento — São Paulo</span></h3>
+              <div class="geo-sp" role="img" aria-label="Mapa térmico São Paulo">
+                <span class="pin pos" style="left:42%;top:38%">Pinheiros · 18+</span>
+                <span class="pin neg" style="left:55%;top:48%">Mooca · 92−</span>
+                <span class="pin pos" style="left:48%;top:58%">Sapopemba · 24+</span>
+                <span class="pin neg" style="left:62%;top:42%">Tatuapé · 61−</span>
+                <span class="pin pos" style="left:35%;top:55%">Campo Limpo · 15+</span>
+                <span class="pin neg" style="left:50%;top:32%">Santana · 74−</span>
+              </div>
+              <p style="margin:12px 0 0;font-size:0.82rem;color:var(--muted)"><span data-i18n="dash.geoNote">Clusters de alteração térmica por bairro · RWE territorial</span></p>
+            </div>
+            <div class="panel">
+              <h3><span data-i18n="dash.bairroTitle">Distribuição por bairro (top)</span></h3>
+              <div class="bar-chart">
+                <div class="bar-row"><span>Sapopemba</span><div class="bar-track"><div class="bar-fill" style="width:92%"></div></div><span>412</span></div>
+                <div class="bar-row"><span>Campo Limpo</span><div class="bar-track"><div class="bar-fill" style="width:78%"></div></div><span>348</span></div>
+                <div class="bar-row"><span>Brasilândia</span><div class="bar-track"><div class="bar-fill" style="width:70%"></div></div><span>311</span></div>
+                <div class="bar-row"><span>Capão Redondo</span><div class="bar-track"><div class="bar-fill" style="width:64%"></div></div><span>286</span></div>
+                <div class="bar-row"><span>Pinheiros</span><div class="bar-track"><div class="bar-fill blue" style="width:48%"></div></div><span>214</span></div>
+                <div class="bar-row"><span>Mooca</span><div class="bar-track"><div class="bar-fill blue" style="width:42%"></div></div><span>188</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dash-section">
+            <div class="section-label"><span data-i18n="dash.secStock">Estoque &amp; dispensação de pads</span></div>
+            <div class="panel" style="margin-bottom:14px">
+              <h3><span data-i18n="dash.stockTitle">Resumo de estoque (rede SP)</span></h3>
+              <div class="stock-grid">
+                <div class="stock-card"><div class="k"><span data-i18n="dash.stockOnHand">Em estoque</span></div><div class="v">4.260</div><div class="s"><span data-i18n="dash.stockOnHandS">pads lacrados</span></div></div>
+                <div class="stock-card"><div class="k"><span data-i18n="dash.stockDone">Realizados</span></div><div class="v">3.842</div><div class="s"><span data-i18n="dash.stockDoneS">dispensados no ciclo</span></div></div>
+                <div class="stock-card"><div class="k"><span data-i18n="dash.stockWait">Em espera</span></div><div class="v">186</div><div class="s"><span data-i18n="dash.stockWaitS">agendados / fila UBS</span></div></div>
+                <div class="stock-card"><div class="k"><span data-i18n="dash.stockBought">Comprados (mês)</span></div><div class="v">2.000</div><div class="s"><span data-i18n="dash.stockBoughtS">pedido Welwaze #SP-09</span></div></div>
+                <div class="stock-card"><div class="k"><span data-i18n="dash.stockAcquire">A adquirir</span></div><div class="v">1.500</div><div class="s"><span data-i18n="dash.stockAcquireS">sugestão 30 dias</span></div></div>
+                <div class="stock-card"><div class="k"><span data-i18n="dash.stockSla">Prazo dispensação</span></div><div class="v">11d</div><div class="s"><span data-i18n="dash.stockSlaS">média lote → uso</span></div></div>
+              </div>
+            </div>
+            <div class="panel">
+              <h3><span data-i18n="dash.stockByUnit">Estoque por unidade</span></h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th data-i18n="dash.thUnit">Unidade</th>
+                    <th data-i18n="dash.thStock">Estoque</th>
+                    <th data-i18n="dash.thDone">Realizados</th>
+                    <th data-i18n="dash.thWait">Espera</th>
+                    <th data-i18n="dash.thExpiry">Validade lote</th>
+                    <th data-i18n="dash.thStatus">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>UBS Jardim Ângela</td>
+                    <td>420</td><td>518</td><td>32</td>
+                    <td>03/2027</td>
+                    <td><span class="chip chip-ok">OK</span></td>
+                  </tr>
+                  <tr>
+                    <td>UBS Sapopemba</td>
+                    <td>180</td><td>412</td><td>41</td>
+                    <td>11/2026</td>
+                    <td><span class="chip chip-alert"><span data-i18n="dash.statusRestock">Reabastecer</span></span></td>
+                  </tr>
+                  <tr>
+                    <td>UBS Campo Limpo</td>
+                    <td>310</td><td>348</td><td>22</td>
+                    <td>01/2027</td>
+                    <td><span class="chip chip-ok">OK</span></td>
+                  </tr>
+                  <tr>
+                    <td>AMA Mooca</td>
+                    <td>95</td><td>188</td><td>18</td>
+                    <td>10/2026</td>
+                    <td><span class="chip chip-alert"><span data-i18n="dash.statusCrit">Crítico</span></span></td>
+                  </tr>
+                  <tr>
+                    <td>UBS Pinheiros</td>
+                    <td>540</td><td>214</td><td>9</td>
+                    <td>06/2027</td>
+                    <td><span class="chip chip-ok">OK</span></td>
+                  </tr>
+                  <tr>
+                    <td>UBS Brasilândia</td>
+                    <td>260</td><td>311</td><td>27</td>
+                    <td>12/2026</td>
+                    <td><span class="chip chip-info"><span data-i18n="dash.statusWatch">Monitorar</span></span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="dash-section">
+            <div class="section-label"><span data-i18n="dash.secExam">Dados dos exames · positivos vs negativos</span></div>
+            <div class="split-pos-neg">
+              <!-- POSITIVOS -->
+              <div class="panel pos-panel">
+                <h3><span data-i18n="dash.posTitle">Positivos · alteração térmica</span></h3>
+                <div class="metric-mini">
+                  <div class="stat"><div class="label"><span data-i18n="dash.cases">Casos</span></div><div class="value">568</div><div class="delta delta-warn">14,8%</div></div>
+                  <div class="stat"><div class="label"><span data-i18n="dash.avgAge">Idade média</span></div><div class="value">44,2</div><div class="delta"><span data-i18n="dash.years">anos</span></div></div>
+                  <div class="stat"><div class="label"><span data-i18n="dash.avgWeight">Peso médio</span></div><div class="value">71,4</div><div class="delta">kg</div></div>
+                  <div class="stat"><div class="label"><span data-i18n="dash.avgHeight">Altura média</span></div><div class="value">1,61</div><div class="delta">m</div></div>
+                </div>
+
+                <div class="donut-wrap" style="margin-bottom:16px">
+                  <div class="donut" style="background:conic-gradient(#c2186a 0 94%, #2f6fed 94% 100%)"><span>96% ♀</span></div>
+                  <ul class="legend">
+                    <li><i style="background:#c2186a"></i> <span data-i18n="dash.female">Feminino</span> · 545</li>
+                    <li><i style="background:#2f6fed"></i> <span data-i18n="dash.male">Masculino</span> · 23</li>
+                    <li><span data-i18n="dash.comorbPos">Comorbidade: HAS 38% · DM 21%</span></li>
+                    <li><span data-i18n="dash.histPos">Hist. familiar 1º grau: 41%</span></li>
+                  </ul>
+                </div>
+
+                <h3 style="font-size:0.95rem"><span data-i18n="dash.posBairros">Bairros com mais positivos</span></h3>
+                <div class="bar-chart">
+                  <div class="bar-row"><span>Sapopemba</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span>64</span></div>
+                  <div class="bar-row"><span>Campo Limpo</span><div class="bar-track"><div class="bar-fill" style="width:78%"></div></div><span>50</span></div>
+                  <div class="bar-row"><span>Brasilândia</span><div class="bar-track"><div class="bar-fill" style="width:66%"></div></div><span>42</span></div>
+                  <div class="bar-row"><span>Capão Redondo</span><div class="bar-track"><div class="bar-fill" style="width:55%"></div></div><span>35</span></div>
+                </div>
+
+                <h3 style="font-size:0.95rem;margin-top:16px"><span data-i18n="dash.ageBand">Faixa etária</span></h3>
+                <div class="bar-chart">
+                  <div class="bar-row"><span>20–39</span><div class="bar-track"><div class="bar-fill" style="width:40%"></div></div><span>22%</span></div>
+                  <div class="bar-row"><span>40–49</span><div class="bar-track"><div class="bar-fill" style="width:88%"></div></div><span>38%</span></div>
+                  <div class="bar-row"><span>50–69</span><div class="bar-track"><div class="bar-fill" style="width:70%"></div></div><span>31%</span></div>
+                  <div class="bar-row"><span>70+</span><div class="bar-track"><div class="bar-fill" style="width:22%"></div></div><span>9%</span></div>
+                </div>
+              </div>
+
+              <!-- NEGATIVOS -->
+              <div class="panel neg-panel">
+                <h3><span data-i18n="dash.negTitle">Negativos · sem alteração</span></h3>
+                <div class="metric-mini">
+                  <div class="stat"><div class="label"><span data-i18n="dash.cases">Casos</span></div><div class="value">3.274</div><div class="delta delta-up">85,2%</div></div>
+                  <div class="stat"><div class="label"><span data-i18n="dash.avgAge">Idade média</span></div><div class="value">46,8</div><div class="delta"><span data-i18n="dash.years">anos</span></div></div>
+                  <div class="stat"><div class="label"><span data-i18n="dash.avgWeight">Peso médio</span></div><div class="value">68,9</div><div class="delta">kg</div></div>
+                  <div class="stat"><div class="label"><span data-i18n="dash.avgHeight">Altura média</span></div><div class="value">1,62</div><div class="delta">m</div></div>
+                </div>
+
+                <div class="donut-wrap" style="margin-bottom:16px">
+                  <div class="donut" style="background:conic-gradient(#1b8a5a 0 97%, #2f6fed 97% 100%)"><span>98% ♀</span></div>
+                  <ul class="legend">
+                    <li><i style="background:#1b8a5a"></i> <span data-i18n="dash.female">Feminino</span> · 3.210</li>
+                    <li><i style="background:#2f6fed"></i> <span data-i18n="dash.male">Masculino</span> · 64</li>
+                    <li><span data-i18n="dash.comorbNeg">Comorbidade: HAS 29% · DM 14%</span></li>
+                    <li><span data-i18n="dash.histNeg">Hist. familiar 1º grau: 12%</span></li>
+                  </ul>
+                </div>
+
+                <h3 style="font-size:0.95rem"><span data-i18n="dash.negBairros">Bairros com mais negativos</span></h3>
+                <div class="bar-chart">
+                  <div class="bar-row"><span>Santana</span><div class="bar-track"><div class="bar-fill green" style="width:100%"></div></div><span>290</span></div>
+                  <div class="bar-row"><span>Tatuapé</span><div class="bar-track"><div class="bar-fill green" style="width:88%"></div></div><span>256</span></div>
+                  <div class="bar-row"><span>Mooca</span><div class="bar-track"><div class="bar-fill green" style="width:76%"></div></div><span>221</span></div>
+                  <div class="bar-row"><span>Pinheiros</span><div class="bar-track"><div class="bar-fill green" style="width:68%"></div></div><span>196</span></div>
+                </div>
+
+                <h3 style="font-size:0.95rem;margin-top:16px"><span data-i18n="dash.ageBand">Faixa etária</span></h3>
+                <div class="bar-chart">
+                  <div class="bar-row"><span>20–39</span><div class="bar-track"><div class="bar-fill green" style="width:35%"></div></div><span>18%</span></div>
+                  <div class="bar-row"><span>40–49</span><div class="bar-track"><div class="bar-fill green" style="width:72%"></div></div><span>34%</span></div>
+                  <div class="bar-row"><span>50–69</span><div class="bar-track"><div class="bar-fill green" style="width:90%"></div></div><span>39%</span></div>
+                  <div class="bar-row"><span>70+</span><div class="bar-track"><div class="bar-fill green" style="width:20%"></div></div><span>9%</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dash-section panel">
+            <h3><span data-i18n="dash.histAgg">Histórico clínico agregado (amostra SP)</span></h3>
+            <div class="chart-row">
+              <div>
+                <div class="section-label" style="margin-bottom:10px"><span data-i18n="dash.comorbPosSec">Comorbidades — positivos</span></div>
+                <div class="bar-chart">
+                  <div class="bar-row"><span>HAS</span><div class="bar-track"><div class="bar-fill" style="width:76%"></div></div><span>38%</span></div>
+                  <div class="bar-row"><span>Diabetes</span><div class="bar-track"><div class="bar-fill" style="width:42%"></div></div><span>21%</span></div>
+                  <div class="bar-row"><span>Obesidade</span><div class="bar-track"><div class="bar-fill" style="width:54%"></div></div><span>27%</span></div>
+                  <div class="bar-row"><span>Tabagismo</span><div class="bar-track"><div class="bar-fill" style="width:30%"></div></div><span>15%</span></div>
+                </div>
+              </div>
+              <div>
+                <div class="section-label" style="margin-bottom:10px"><span data-i18n="dash.comorbNegSec">Comorbidades — negativos</span></div>
+                <div class="bar-chart">
+                  <div class="bar-row"><span>HAS</span><div class="bar-track"><div class="bar-fill green" style="width:58%"></div></div><span>29%</span></div>
+                  <div class="bar-row"><span>Diabetes</span><div class="bar-track"><div class="bar-fill green" style="width:28%"></div></div><span>14%</span></div>
+                  <div class="bar-row"><span>Obesidade</span><div class="bar-track"><div class="bar-fill green" style="width:36%"></div></div><span>18%</span></div>
+                  <div class="bar-row"><span>Tabagismo</span><div class="bar-track"><div class="bar-fill green" style="width:22%"></div></div><span>11%</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- T1 Torre -->
+        <section class="view" id="view-torre" data-title="Torre de controle">
+          <div class="torre-hero">
+            <div>
+              <h1 data-i18n="torre.h1">12,4 mil mulheres no ciclo de cuidado</h1>
+              <p data-i18n="torre.lead">Cobertura de triagem Celbrea®, filas de imagem e retorno BI-RADS — do Point-of-Care à contrareferência.</p>
+              <div class="torre-cta">
+                <button class="btn btn-primary" data-go="navegador"><span data-i18n="torre.openNav">Abrir fila do navegador</span></button>
+                <button class="btn btn-ghost" data-go="triagem"><span data-i18n="torre.newScreen">Nova triagem</span></button>
+              </div>
+            </div>
+            <div class="map-mock" role="img" aria-label="Thermal coverage map"></div>
+          </div>
+
+          <div class="grid-4" style="margin-bottom:18px">
+            <div class="stat">
+              <div class="label"><span data-i18n="torre.kExams">Triagens no mês</span></div>
+              <div class="value">1.842</div>
+              <div class="delta delta-up"><span data-i18n="torre.kExamsD">+18% vs mês anterior</span></div>
+            </div>
+            <div class="stat">
+              <div class="label"><span data-i18n="torre.kPos">Positividade térmica</span></div>
+              <div class="value">14,8%</div>
+              <div class="delta delta-warn"><span data-i18n="torre.kPosD">273 para referência</span></div>
+            </div>
+            <div class="stat">
+              <div class="label"><span data-i18n="torre.kTat">TAT médio pós-Celbrea</span></div>
+              <div class="value">9d</div>
+              <div class="delta delta-up"><span data-i18n="torre.kTatD">meta &lt; 14 dias</span></div>
+            </div>
+            <div class="stat">
+              <div class="label"><span data-i18n="torre.kRec">Recorrência em dia</span></div>
+              <div class="value">81%</div>
+              <div class="delta delta-up"><span data-i18n="torre.kRecD">cohort anual/semestral</span></div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="panel">
+              <h3><span data-i18n="torre.bottlenecks">Gargalos na linha</span></h3>
+              <table class="table">
+                <thead>
+                  <tr><th data-i18n="torre.thStep">Etapa</th><th data-i18n="torre.thQueue">Fila</th><th data-i18n="dash.thStatus">Status</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><span data-i18n="torre.rowMammo">Aguardando mamografia</span></td><td>64</td><td><span class="chip chip-alert"><span data-i18n="torre.att">Atenção</span></span></td></tr>
+                  <tr><td><span data-i18n="torre.rowLaudo">Laudo BI-RADS pendente</span></td><td>21</td><td><span class="chip chip-info"><span data-i18n="dash.statusWatch">Monitorar</span></span></td></tr>
+                  <tr><td><span data-i18n="torre.rowBio">Biópsia (4–5)</span></td><td>7</td><td><span class="chip chip-alert"><span data-i18n="torre.prio">Prioritário</span></span></td></tr>
+                  <tr><td><span data-i18n="torre.rowRecall">Rechamada atrasada</span></td><td>112</td><td><span class="chip">Mensageria</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="panel">
+              <h3><span data-i18n="torre.predTitle">Predição territorial (RWE)</span></h3>
+              <p style="color:var(--muted);margin:0 0 14px;font-size:0.92rem">
+                <span data-i18n="torre.predLead">Clusters de alteração térmica correlacionados a vazio de mamógrafos — input para regulação.</span>
+              </p>
+              <div class="stat" style="margin-bottom:10px">
+                <div class="label"><span data-i18n="torre.predScore">Score epidemiológico zona norte</span></div>
+                <div class="value" style="font-size:1.4rem"><span data-i18n="torre.predHigh">Alto</span></div>
+              </div>
+              <button class="btn btn-soft btn-block" data-go="cohorts"><span data-i18n="torre.seeCohorts">Ver cohorts elegíveis</span></button>
+            </div>
+          </div>
+        </section>
+
+        <!-- T2 Wizard triagem -->
+        <section class="view" id="view-triagem" data-title="Nova triagem">
+          <div class="page-head">
+            <div>
+              <h1><span data-i18n="tri.h1">Nova triagem Celbrea®</span></h1>
+              <p><span data-i18n="tri.lead">Cadastro, vínculo, anamnese, scan do pad e registro térmico A/B em um fluxo de campo.</span></p>
+            </div>
+          </div>
+
+          <div class="steps" id="wizard-steps">
+            <span class="step-pill on" data-step="1"><span data-i18n="tri.s1">1 · Paciente</span></span>
+            <span class="step-pill" data-step="2"><span data-i18n="tri.s2">2 · Anamnese</span></span>
+            <span class="step-pill" data-step="3"><span data-i18n="tri.s3">3 · Scan QR</span></span>
+            <span class="step-pill" data-step="4"><span data-i18n="tri.s4">4 · Pad A/B</span></span>
+            <span class="step-pill" data-step="5"><span data-i18n="tri.s5">5 · Confirmar</span></span>
+          </div>
+
+          <div class="panel">
+            <div class="wizard-pane active" data-pane="1">
+              <h3><span data-i18n="tri.idTitle">Identificar / cadastrar</span></h3>
+              <div class="form-grid">
+                <div class="field"><label><span data-i18n="tri.cpf">CPF</span></label><input value="123.456.789-00" /></div>
+                <div class="field"><label><span data-i18n="tri.cns">CNS</span></label><input value="898 0012 3456 7890" /></div>
+                <div class="field full"><label><span data-i18n="tri.name">Nome completo</span></label><input value="Clarice Mendes da Silva" /></div>
+                <div class="field"><label><span data-i18n="tri.dob">Data de nascimento</span></label><input value="12/03/1984" /></div>
+                <div class="field"><label><span data-i18n="tri.sex">Sexo / identidade</span></label><input value="Feminino" /></div>
+                <div class="field full"><label><span data-i18n="tri.unit">Unidade de vínculo</span></label><input value="UBS Centro — ESF Rosa" /></div>
+              </div>
+              <div class="footer-actions">
+                <button class="btn btn-primary" data-next-step><span data-i18n="tri.continue">Continuar</span></button>
+              </div>
+            </div>
+
+            <div class="wizard-pane" data-pane="2">
+              <h3><span data-i18n="tri.anTitle">Anamnese rápida (fatores de risco)</span></h3>
+              <div class="check-list">
+                <label class="check-item"><input type="checkbox" checked /><span><strong><span data-i18n="tri.anFam">Histórico familiar 1º grau</span></strong><br /><small style="color:var(--muted)"><span data-i18n="tri.anFamD">Mãe — Ca mama aos 52 anos</span></small></span></label>
+                <label class="check-item"><input type="checkbox" /><span><strong><span data-i18n="tri.anSym">Sintoma atual</span></strong><br /><small style="color:var(--muted)"><span data-i18n="tri.anSymD">Nódulo palpável, dor, secreção</span></small></span></label>
+                <label class="check-item"><input type="checkbox" checked /><span><strong><span data-i18n="tri.anLeg">Faixa elegível legislação</span></strong><br /><small style="color:var(--muted)"><span data-i18n="tri.anLegD">40–69 anos · rastreio anual sugerido</span></small></span></label>
+                <label class="check-item"><input type="checkbox" /><span><strong><span data-i18n="tri.anMam">Mamografia nos últimos 24 meses</span></strong></span></label>
+              </div>
+              <div class="footer-actions">
+                <button class="btn btn-ghost" data-prev-step><span data-i18n="tri.back">Voltar</span></button>
+                <button class="btn btn-primary" data-next-step><span data-i18n="tri.continue">Continuar</span></button>
+              </div>
+            </div>
+
+            <div class="wizard-pane" data-pane="3">
+              <h3><span data-i18n="tri.qrTitle">Escanear QR do pad</span></h3>
+              <div class="scan-box">
+                <div class="qr-frame ok" id="qr-frame" aria-hidden="true"></div>
+                <div>
+                  <p style="margin:0 0 12px;color:var(--muted)"><span data-i18n="tri.qrLead">Vínculo dispositivo → paciente. Controle de lote, validade e fraude.</span></p>
+                  <div class="stat" style="margin-bottom:10px">
+                    <div class="label"><span data-i18n="tri.qrLot">Lote / validade</span></div>
+                    <div class="value" style="font-size:1.2rem">CB-2026-0912 · OK</div>
+                  </div>
+                  <button class="btn btn-soft" id="btn-scan"><span data-i18n="tri.qrSim">Simular leitura QR</span></button>
+                </div>
+              </div>
+              <div class="footer-actions">
+                <button class="btn btn-ghost" data-prev-step><span data-i18n="tri.back">Voltar</span></button>
+                <button class="btn btn-primary" data-next-step><span data-i18n="tri.continue">Continuar</span></button>
+              </div>
+            </div>
+
+            <div class="wizard-pane" data-pane="4">
+              <h3><span data-i18n="tri.padTitle">Digital twin — resultado térmico</span></h3>
+              <div class="pad-stage">
+                <div class="pad-svg-wrap">
+                  <svg viewBox="0 0 440 320" role="img" aria-label="Pad Celbrea asas A e B">
+                    <defs>
+                      <pattern id="dots" width="10" height="10" patternUnits="userSpaceOnUse">
+                        <circle cx="2" cy="2" r="1.4" fill="#5a5a7a" />
+                      </pattern>
+                    </defs>
+                    <!-- Wing A -->
+                    <path d="M210 160 C210 70 140 40 70 55 C40 65 30 120 45 170 C60 220 120 250 180 230 C200 220 210 190 210 160 Z" fill="url(#dots)" stroke="#e91e8c" stroke-width="4" />
+                    <text x="95" y="150" fill="#e91e8c" font-size="28" font-family="Syne,sans-serif" font-weight="700">A</text>
+                    <circle class="hotspot" data-side="A" cx="120" cy="100" r="10" fill="#5a5a7a" />
+                    <circle class="hotspot" data-side="A" cx="95" cy="130" r="10" fill="#5a5a7a" />
+                    <circle class="hotspot" data-side="A" cx="130" cy="155" r="10" fill="#5a5a7a" />
+                    <circle class="hotspot" data-side="A" cx="100" cy="180" r="10" fill="#5a5a7a" />
+                    <!-- Wing B -->
+                    <path d="M230 160 C230 70 300 40 370 55 C400 65 410 120 395 170 C380 220 320 250 260 230 C240 220 230 190 230 160 Z" fill="url(#dots)" stroke="#2f6fed" stroke-width="4" />
+                    <text x="320" y="150" fill="#2f6fed" font-size="28" font-family="Syne,sans-serif" font-weight="700">B</text>
+                    <circle class="hotspot" data-side="B" cx="320" cy="100" r="10" fill="#5a5a7a" />
+                    <circle class="hotspot" data-side="B" cx="345" cy="130" r="10" fill="#5a5a7a" />
+                    <circle class="hotspot" data-side="B" cx="310" cy="155" r="10" fill="#5a5a7a" />
+                    <circle class="hotspot" data-side="B" cx="340" cy="180" r="10" fill="#5a5a7a" />
+                    <!-- Center -->
+                    <circle cx="220" cy="155" r="28" fill="#f7f5f3" stroke="#ccc" stroke-width="2" />
+                    <rect x="195" y="18" width="50" height="50" rx="6" fill="#111" />
+                    <text x="220" y="88" text-anchor="middle" font-size="11" fill="#6b7280">QR · THIS SIDE UP</text>
+                  </svg>
+                </div>
+                <div class="pad-controls">
+                  <p style="margin:0;color:var(--muted);font-size:0.92rem"><span data-i18n="tri.padLead">Toque nos pontos do grid para marcar hotspots. A = rosa · B = azul (espelho do pad físico).</span></p>
+                  <div class="result-toggle">
+                    <button type="button" id="btn-neg" class="active-neg"><span data-i18n="tri.neg">Negativo</span></button>
+                    <button type="button" id="btn-pos"><span data-i18n="tri.pos">Positivo</span></button>
+                  </div>
+                  <div class="stat">
+                    <div class="label"><span data-i18n="tri.reading">Leitura atual</span></div>
+                    <div class="value" style="font-size:1.25rem" id="pad-reading"><span data-i18n="tri.readingNeg">Sem alteração térmica</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="footer-actions">
+                <button class="btn btn-ghost" data-prev-step><span data-i18n="tri.back">Voltar</span></button>
+                <button class="btn btn-primary" data-next-step><span data-i18n="tri.continue">Continuar</span></button>
+              </div>
+            </div>
+
+            <div class="wizard-pane" data-pane="5">
+              <h3><span data-i18n="tri.confirm">Confirmar sessão</span></h3>
+              <div class="grid-3">
+                <div class="stat"><div class="label"><span data-i18n="tri.patient">Paciente</span></div><div class="value" style="font-size:1.1rem">Clarice M.</div></div>
+                <div class="stat"><div class="label"><span data-i18n="tri.device">Dispositivo</span></div><div class="value" style="font-size:1.1rem">CB-2026-0912</div></div>
+                <div class="stat"><div class="label"><span data-i18n="tri.result">Resultado</span></div><div class="value" style="font-size:1.1rem" id="confirm-result"><span data-i18n="tri.neg">Negativo</span></div></div>
+              </div>
+              <div class="footer-actions">
+                <button class="btn btn-ghost" data-prev-step><span data-i18n="tri.back">Voltar</span></button>
+                <button class="btn btn-primary" data-go="score"><span data-i18n="tri.toScore">Gerar score &amp; elegibilidade</span></button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- T3 Score -->
+        <section class="view" id="view-score" data-title="Score & elegibilidade">
+          <div class="page-head">
+            <div>
+              <h1><span data-i18n="score.h1">Score de risco dinâmico</span></h1>
+              <p><span data-i18n="score.lead">Correlação Celbrea + anamnese + território + regra de rastreio.</span></p>
+            </div>
+            <span class="chip chip-alert" id="score-badge"><span data-i18n="score.badgePos">Alteração térmica</span></span>
+          </div>
+          <div class="grid-2">
+            <div class="panel" style="text-align:center">
+              <div class="score-ring" id="score-ring"><div id="score-num">78</div></div>
+              <h3 style="margin-bottom:6px"><span data-i18n="score.prio">Prioridade vermelha</span></h3>
+              <p style="color:var(--muted);margin:0 0 16px"><span data-i18n="score.prioLead">Encaminhar para exame estrutural</span></p>
+              <span class="chip chip-info"><span data-i18n="score.elig">Elegível · rastreio anual (legislação)</span></span>
+            </div>
+            <div class="panel">
+              <h3><span data-i18n="score.factors">Fatores</span></h3>
+              <ul class="factor-list">
+                <li><span><span data-i18n="score.fAge">Idade 42 anos</span></span><strong>+12</strong></li>
+                <li><span><span data-i18n="score.fFam">Familiar 1º grau</span></span><strong>+22</strong></li>
+                <li><span><span data-i18n="score.fCel">Celbrea positivo</span></span><strong>+28</strong></li>
+                <li><span><span data-i18n="score.fGeo">Vazio de mamógrafo (zona)</span></span><strong>+16</strong></li>
+              </ul>
+              <div class="footer-actions">
+                <button class="btn btn-ghost" data-go="paciente"><span data-i18n="score.seeFile">Ver ficha</span></button>
+                <button class="btn btn-primary" data-go="referencia"><span data-i18n="score.guide">Gerar guia de referência</span></button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- T4 Referência -->
+        <section class="view" id="view-referencia" data-title="Guia de referência">
+          <div class="page-head">
+            <div>
+              <h1><span data-i18n="ref.h1">Guia eletrônica de referência</span></h1>
+              <p><span data-i18n="ref.lead">Prioridade alta · destino sugerido pela regulação .</span></p>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="form-grid">
+              <div class="field"><label><span data-i18n="ref.spec">Especialidade</span></label><input value="Mastologia / Imagem mamária" /></div>
+              <div class="field"><label><span data-i18n="ref.prio">Prioridade</span></label><input value="Vermelha — Celbrea +" /></div>
+              <div class="field full"><label><span data-i18n="ref.dest">Destino</span></label><input value="CACON Regional — Mamografia 3D / US" /></div>
+              <div class="field full"><label><span data-i18n="ref.just">Justificativa</span></label><textarea rows="3" style="border:1px solid var(--line);border-radius:12px;padding:12px;background:#faf9f8" data-i18n="ref.justVal" data-i18n-value>Alteração térmica + histórico familiar. Score 78. Solicita exame estrutural prioritário.</textarea></div>
+            </div>
+            <div class="footer-actions">
+              <button class="btn btn-ghost" data-go="score">Voltar</button>
+              <button class="btn btn-primary" id="btn-enviar-guia" data-go="paciente"><span data-i18n="ref.send">Enviar à regulação</span></button>
+            </div>
+          </div>
+        </section>
+
+        <!-- T5 Paciente -->
+        <section class="view" id="view-paciente" data-title="Ficha do paciente">
+          <div class="page-head">
+            <div>
+              <h1><span data-i18n="pat.h1">Clarice Mendes da Silva</span></h1>
+              <p><span data-i18n="pat.meta">42 anos · UBS Centro · CNS ·••••7890 · Score atual 78</span></p>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <span class="chip chip-alert"><span data-i18n="pat.wait">Aguardando laudo</span></span>
+              <span class="chip chip-info"><span data-i18n="pat.sent">Guia enviada</span></span>
+            </div>
+          </div>
+
+          <div class="tabs" id="patient-tabs">
+            <button class="tab active" data-tab="timeline"><span data-i18n="pat.tabTimeline">Acompanhamento</span></button>
+            <button class="tab" data-tab="anamnese"><span data-i18n="pat.tabAn">Anamnese</span></button>
+            <button class="tab" data-tab="clinicos"><span data-i18n="pat.tabClin">Clínicos</span></button>
+            <button class="tab" data-tab="docs"><span data-i18n="pat.tabDocs">Documentos</span></button>
+          </div>
+
+          <div class="grid-2">
+            <div>
+              <div class="panel patient-panel" data-panel="timeline">
+                <h3><span data-i18n="pat.timeline">Timeline da jornada</span></h3>
+                <ul class="timeline">
+                  <li>
+                    <div class="when">22/09/2026 · 09:12</div>
+                    <div class="what"><span data-i18n="pat.t1">Cadastro + vínculo UBS Centro</span></div>
+                    <div class="detail"><span data-i18n="pat.t1d">Consentimento LGPD registrado</span></div>
+                  </li>
+                  <li>
+                    <div class="when">22/09/2026 · 09:28</div>
+                    <div class="what"><span data-i18n="pat.t2">Triagem Celbrea® — positivo</span></div>
+                    <div class="detail"><span data-i18n="pat.t2d">Pad CB-2026-0912 · hotspots A3 / B2</span></div>
+                  </li>
+                  <li>
+                    <div class="when">22/09/2026 · 09:31</div>
+                    <div class="what"><span data-i18n="pat.t3">Score 78 · prioridade vermelha</span></div>
+                    <div class="detail"><span data-i18n="pat.t3d">Elegível rastreio anual</span></div>
+                  </li>
+                  <li>
+                    <div class="when">22/09/2026 · 09:35</div>
+                    <div class="what"><span data-i18n="pat.t4">Guia de referência enviada</span></div>
+                    <div class="detail"><span data-i18n="pat.t4d">CACON Regional · mamografia/US</span></div>
+                  </li>
+                  <li>
+                    <div class="when"><span data-i18n="pat.t5w">Pendente</span></div>
+                    <div class="what"><span data-i18n="pat.t5">Contrareferência BI-RADS</span></div>
+                    <div class="detail"><span data-i18n="pat.t5d">Aguardando laudo RIS/PACS</span></div>
+                  </li>
+                </ul>
+              </div>
+              <div class="panel patient-panel" data-panel="anamnese" hidden>
+                <h3><span data-i18n="pat.tabAn">Anamnese</span></h3>
+                <ul class="factor-list">
+                  <li><span><span data-i18n="score.fFam">Familiar 1º grau</span></span><strong>Sim</strong></li>
+                  <li><span>Sintomas atuais</span><strong>Não</strong></li>
+                  <li><span>Última mamografia</span><strong>Nunca</strong></li>
+                  <li><span>Gestação / amamentação</span><strong>Não</strong></li>
+                </ul>
+              </div>
+              <div class="panel patient-panel" data-panel="clinicos" hidden>
+                <h3><span data-i18n="pat.clinTitle">Dados clínicos</span></h3>
+                <p style="color:var(--muted)"><span data-i18n="pat.clinBody">IMC 26,2 · HAS controlada · sem cirurgia mamária prévia. Prontuário resumido.</span></p>
+              </div>
+              <div class="panel patient-panel" data-panel="docs" hidden>
+                <h3><span data-i18n="pat.tabDocs">Documentos</span></h3>
+                <div class="row-card"><div><strong><span data-i18n="pat.docPad">Foto pad pós-exame</span></strong><span>sessao-0912.jpg</span></div><span class="chip">Arquivo</span></div>
+                <div class="row-card"><div><strong><span data-i18n="pat.docGuide">Guia referência PDF</span></strong><span>guia-clarice.pdf</span></div><span class="chip">Arquivo</span></div>
+              </div>
+            </div>
+            <div class="panel">
+              <h3><span data-i18n="pat.actions">Próximas ações</span></h3>
+              <button class="btn btn-primary btn-block" style="margin-bottom:10px" data-go="navegador"><span data-i18n="pat.toNav">Ir para fila do navegador</span></button>
+              <button class="btn btn-ghost btn-block" data-go="mensageria"><span data-i18n="pat.remind">Enviar lembrete</span></button>
+            </div>
+          </div>
+        </section>
+
+        <!-- T6 Navegador -->
+        <section class="view" id="view-navegador" data-title="Fila do navegador">
+          <div class="page-head">
+            <div>
+              <h1><span data-i18n="navq.h1">Contrareferência &amp; navegação</span></h1>
+              <p><span data-i18n="navq.lead">Match BI-RADS, alertas 4–5 e devolução à APS.</span></p>
+            </div>
+          </div>
+          <div class="row-card">
+            <div>
+              <strong><span data-i18n="navq.pending">Clarice Mendes · BI-RADS pendente</span></strong>
+              <span><span data-i18n="navq.pendingD">Guia há 0 dias · CACON Regional</span></span>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-soft" id="btn-simular-birads"><span data-i18n="navq.sim">Simular laudo 4</span></button>
+            </div>
+          </div>
+          <div class="row-card">
+            <div>
+              <strong><span data-i18n="navq.h5">Helena Costa · BI-RADS 5</span></strong>
+              <span><span data-i18n="navq.h5d">Alerta crítico · agendar biópsia &lt; 10 dias</span></span>
+            </div>
+            <span class="chip chip-alert"><span data-i18n="navq.action">Ação</span></span>
+          </div>
+          <div class="row-card">
+            <div>
+              <strong><span data-i18n="navq.m2">Marina Alves · BI-RADS 2</span></strong>
+              <span><span data-i18n="navq.m2d">Devolver ao ciclo preventivo · recorrência 12 meses</span></span>
+            </div>
+            <span class="chip chip-ok"><span data-i18n="navq.close">Fechar loop</span></span>
+          </div>
+          <div class="panel" id="birads-alert" hidden style="margin-top:16px;border-color:rgba(232,90,79,0.35)">
+            <h3><span data-i18n="navq.alert">Alerta — Clarice Mendes · BI-RADS 4</span></h3>
+            <p style="color:var(--muted)"><span data-i18n="navq.alertD">Suspeita. Disparar navegação para biópsia diagnóstica e notificar UBS de origem.</span></p>
+            <div class="footer-actions">
+              <button class="btn btn-primary"><span data-i18n="navq.bio">Agendar biópsia</span></button>
+              <button class="btn btn-ghost" data-go="paciente"><span data-i18n="navq.open">Abrir ficha</span></button>
+            </div>
+          </div>
+        </section>
+
+        <!-- T7 Cohorts -->
+        <section class="view" id="view-cohorts" data-title="Cohorts & recorrência">
+          <div class="page-head">
+            <div>
+              <h1><span data-i18n="coh.h1">Grupos elegíveis &amp; recorrência</span></h1>
+              <p><span data-i18n="coh.lead">Listas por legislação, risco e periodicidade (anual / semestral).</span></p>
+            </div>
+            <button class="btn btn-primary" data-go="mensageria"><span data-i18n="coh.campaign">Disparar campanha</span></button>
+          </div>
+          <div class="grid-3" style="margin-bottom:18px">
+            <div class="stat"><div class="label"><span data-i18n="coh.elig">Elegíveis do mês</span></div><div class="value">486</div></div>
+            <div class="stat"><div class="label"><span data-i18n="coh.late">Atrasadas</span></div><div class="value">112</div></div>
+            <div class="stat"><div class="label"><span data-i18n="coh.post">Pós-positivo em follow-up</span></div><div class="value">39</div></div>
+          </div>
+          <div class="panel">
+            <table class="table">
+              <thead>
+                <tr><th data-i18n="coh.thCohort">Cohort</th><th data-i18n="coh.thRule">Regra</th><th data-i18n="coh.thQty">Qtd</th><th data-i18n="coh.thNext">Próxima ação</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>40–69 anos · SUS</td><td>Anual</td><td>8.210</td><td>Rechamada WhatsApp</td></tr>
+                <tr><td>Alto risco / familiar</td><td>Semestral</td><td>640</td><td>Agenda navegador</td></tr>
+                <tr><td>Jovens 20–39 (protocolo)</td><td>Sob critério</td><td>1.102</td><td>Educação + Celbrea</td></tr>
+                <tr><td>Homens elegíveis (protocolo)</td><td>Sob critério</td><td>48</td><td>Triagem dirigida</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- T8 Arquivo -->
+        <section class="view" id="view-arquivo" data-title="Arquivo">
+          <div class="page-head">
+            <div>
+              <h1><span data-i18n="arc.h1">Arquivamento clínico</span></h1>
+              <p><span data-i18n="arc.lead">Fotos do pad, guias, laudos e consentimentos vinculados à sessão.</span></p>
+            </div>
+          </div>
+          <div class="panel">
+            <table class="table">
+              <thead>
+                <tr><th data-i18n="arc.thDoc">Documento</th><th><span data-i18n="tri.patient">Paciente</span></th><th data-i18n="arc.thType">Tipo</th><th data-i18n="arc.thDate">Data</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>pad-clarice-0912.jpg</td><td>Clarice M.</td><td>Foto térmica</td><td>22/09/2026</td></tr>
+                <tr><td>guia-clarice.pdf</td><td>Clarice M.</td><td>Referência</td><td>22/09/2026</td></tr>
+                <tr><td>laudo-helena-birads5.pdf</td><td>Helena C.</td><td>Laudo</td><td>18/09/2026</td></tr>
+                <tr><td>consent-lgpd-batch.pdf</td><td>—</td><td>LGPD</td><td>01/09/2026</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Mensageria -->
+        <section class="view" id="view-mensageria" data-title="Mensageria">
+          <div class="page-head">
+            <div>
+              <h1><span data-i18n="msg.h1">Mensageria &amp; templates</span></h1>
+              <p><span data-i18n="msg.lead">Rechamada, ausência e alertas ao navegador (WhatsApp / SMS).</span></p>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="panel">
+              <h3><span data-i18n="msg.inbox">Inbox</span></h3>
+              <div class="row-card"><div><strong><span data-i18n="msg.m1">Clarice — lembrete mamografia</span></strong><span><span data-i18n="msg.m1d">Agendado · amanhã 09:00</span></span></div><span class="chip chip-info">Fila</span></div>
+              <div class="row-card"><div><strong><span data-i18n="msg.m2">Cohort atrasadas · zona norte</span></strong><span><span data-i18n="msg.m2d">112 destinatárias</span></span></div><span class="chip"><span data-i18n="msg.camp">Campanha</span></span></div>
+            </div>
+            <div class="panel">
+              <h3><span data-i18n="msg.tpl">Template</span></h3>
+              <p style="background:#faf9f8;padding:14px;border-radius:12px;line-height:1.5;margin:0">
+                <span data-i18n="msg.tplBody">Olá, {{nome}}. Sua triagem Celbrea® indicou acompanhamento. Agende o exame de imagem até {{data}}. UBS {{unidade}}.</span>
+              </p>
+              <div class="footer-actions">
+                <button class="btn btn-primary"><span data-i18n="msg.send">Enviar</span></button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Stub capítulos -->
+        <section class="view" id="view-stub" data-title="Capítulo">
+          <div class="stub-note">
+            <strong id="stub-title" data-i18n="stub.prefix">Capítulo</strong>
+            <p data-i18n="stub.note">Este capítulo integra o mapa do produto. A demonstração prioriza o fluxo operacional completo (triagem → score → referência → contrareferência → dashboard).</p>
+            <div style="margin-top:18px">
+              <button class="btn btn-primary" data-go="triagem"><span data-i18n="stub.go">Ir ao fluxo operacional</span></button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

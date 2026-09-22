@@ -1,0 +1,11 @@
+.DS_Store
+.cursor/
+.cursorrules
+01_DIAGNOSIS.md
+02_PLAN.md
+03_EXECUTION.md
+docs/superpowers/
+*.log
+.idea/
+.vscode/
+node_modules/

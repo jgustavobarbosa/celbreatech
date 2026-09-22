@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Celbrea Care — Entrar</title>
+  <link rel="stylesheet" href="css/celbrea-care.css" />
+  <script src="https://unpkg.com/lucide@0.469.0"></script>
+</head>
+<body data-title-key="meta.loginTitle">
+  <main class="login-page">
+    <div class="lang-switcher lang-switcher-fixed" role="group" aria-label="Language">
+      <button type="button" class="lang-btn active" data-lang="pt" title="Português" aria-pressed="true">
+        <span class="flag flag-br" aria-hidden="true"></span><span>PT</span>
+      </button>
+      <button type="button" class="lang-btn" data-lang="en" title="English" aria-pressed="false">
+        <span class="flag flag-us" aria-hidden="true"></span><span>EN</span>
+      </button>
+      <button type="button" class="lang-btn" data-lang="es" title="Español" aria-pressed="false">
+        <span class="flag flag-es" aria-hidden="true"></span><span>ES</span>
+      </button>
+    </div>
+
+    <section class="login-stage" aria-label="Celbrea Care">
+      <div class="login-hero">
+        <div>
+          <div class="brand-row login-reveal">
+            <img class="logo-celbrea" src="assets/brand/logo-celbrea.jpg" alt="celbrea" />
+          </div>
+          <h1 class="login-reveal" data-i18n="login.headline">Linha de cuidado mamário, conectada.</h1>
+          <p class="login-reveal" data-i18n="login.sub">
+            Triagem térmica Celbrea® com referência, contrareferência, recorrência e torre de controle —
+            do pad ao laudo BI-RADS.
+          </p>
+        </div>
+        <img class="device-thumb login-reveal" src="assets/brand/device-celbrea-pad.jpg" alt="Celbrea" />
+      </div>
+      <div class="login-panel">
+        <div class="login-reveal">
+          <h2 data-i18n="login.panelTitle">Entrar na operação</h2>
+          <p class="login-panel-sub" data-i18n="login.panelSub">Demonstração institucional · rede São Paulo</p>
+        </div>
+        <div class="field login-reveal">
+          <label for="email" data-i18n="login.email">E-mail institucional</label>
+          <input id="email" type="email" value="navigator@health.sp.gov.br" autocomplete="username" />
+        </div>
+        <div class="field login-reveal">
+          <label for="senha" data-i18n="login.password">Senha</label>
+          <input id="senha" type="password" value="••••••••" autocomplete="current-password" />
+        </div>
+        <a class="btn btn-primary btn-block login-cta login-reveal" href="app.html#celbrea">
+          <i data-lucide="arrow-right"></i>
+          <span data-i18n="login.cta">Entrar na linha de cuidado</span>
+        </a>
+        <a class="btn btn-ghost btn-block login-reveal" href="app.html#celbrea">
+          <i data-lucide="layout-dashboard"></i>
+          <span data-i18n="login.ctaDash">Abrir Dashboard Celbrea</span>
+        </a>
+        <div class="powered login-reveal">
+          <span data-i18n="login.powered">Fabricante / distribuição</span>
+          <img src="assets/brand/logo-welwaze-medical.jpg" alt="Welwaze Medical" />
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="js/i18n.js"></script>
+  <script>
+    CelbreaI18n.apply();
+    document.querySelectorAll(".lang-btn").forEach((btn) => {
+      btn.addEventListener("click", () => CelbreaI18n.setLang(btn.dataset.lang));
+    });
+    if (window.lucide) lucide.createIcons();
+  </script>
+</body>
+</html>
