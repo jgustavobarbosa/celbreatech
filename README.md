@@ -56,6 +56,39 @@ Open:
 - http://localhost:8765/index.html
 - http://localhost:8765/app.html#celbrea
 
+## Deploy on Vercel
+
+This artifact is a static site under `mockup/`.
+
+### Option A — GitHub import (recommended)
+
+1. Import https://github.com/jgustavobarbosa/celbreatech in the Vercel dashboard
+2. Set **Root Directory** to `mockup`
+3. Framework Preset: Other
+4. Build Command: leave empty
+5. Output Directory: leave empty (or `.`)
+6. Deploy
+
+### Option B — CLI
+
+```bash
+cd mockup
+npx vercel
+```
+
+Production:
+
+```bash
+cd mockup
+npx vercel --prod
+```
+
+### About `npx plugins add vercel/vercel-plugin`
+
+That command installs the **Vercel plugin for coding agents** (Cursor / Claude Code). It adds skills and slash commands such as deploy helpers. It does **not** publish the site by itself; use Option A or B above to go live.
+
+In Cursor you can also install via `/add-plugin vercel`.
+
 ## Suggested demo path
 
 1. Sign in (or open the Celbrea Dashboard directly)
