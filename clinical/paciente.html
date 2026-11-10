@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CELBREA.IA — versão da paciente</title>
+  <style>
+    :root { --bg: #FBF8FA; --panel: #fff; --fg: #2A1F27; --muted: #6E6069; --line: #E6DCE2; --pink: #E5007D; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.5 system-ui, sans-serif; }
+    main { max-width: 720px; margin: 0 auto; padding: 28px 18px 64px; }
+    a { color: var(--pink); }
+    h1 { font-size: 1.8rem; line-height: 1.15; margin: 0 0 8px; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 14px 0; }
+    .note { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <main>
+    <p><a href="index.html">Versão do médico</a></p>
+    <h1>Versão da paciente</h1>
+    <p class="note">Esta página explica o resultado do teste. Ela não mostra outras pacientes, não pede a senha do profissional e não substitui a conversa com quem fez o exame.</p>
+    <div class="card">
+      <h2>Quem entrega o resultado</h2>
+      <p>O médico ou o profissional de saúde registra o teste na versão do médico e entrega o laudo à paciente. O resultado térmico complementa o exame clínico. Não é diagnóstico e não é BI-RADS.</p>
+    </div>
+    <div class="card">
+      <h2>O que cada resultado significa</h2>
+      <p><b>Não significativo.</b> O ciclo preventivo continua, com o acompanhamento indicado pelo profissional.</p>
+      <p><b>Significativo.</b> O profissional pode abrir referência para exame de imagem. O teste térmico não informa BI-RADS.</p>
+      <p><b>Inconclusivo.</b> O teste precisa ser repetido. Ele não conta como exame válido e não abre referência.</p>
+    </div>
+    <div class="card">
+      <h2>O que esta versão ainda não faz</h2>
+      <p>Não há senha da paciente, não há lista de exames de outras pessoas e não há mensagem automática por WhatsApp. Isso fica registrado no plano e não entra nesta página.</p>
+    </div>
+  </main>
+</body>
+</html>

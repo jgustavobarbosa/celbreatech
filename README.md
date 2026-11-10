@@ -32,6 +32,9 @@ Use the language switcher on the login screen or in the application top bar.
 ## Repository layout
 
 ```
+clinical/           Package system: professional auth, reading, report, care
+  index.html        Physician version
+  paciente.html     Patient version, without the record list
 mockup/
   index.html          Login
   app.html            Operational shell and views
@@ -47,14 +50,12 @@ README.md
 No build step is required. From the repository root:
 
 ```bash
-cd mockup
 python3 -m http.server 8765
 ```
 
-Open:
+Open http://localhost:8765 . The root page opens the clinical app in `clinical/`.
 
-- http://localhost:8765/index.html
-- http://localhost:8765/app.html#celbrea
+The presentation shell remains at http://localhost:8765/mockup/index.html .
 
 ## Deploy on Vercel
 

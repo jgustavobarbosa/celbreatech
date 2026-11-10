@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CELBREA.IA — Guia do pacote</title>
+  <style>
+    :root { --bg: #FBF8FA; --panel: #fff; --fg: #2A1F27; --muted: #6E6069; --line: #E6DCE2; --pink: #E5007D; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.5 Figtree, system-ui, sans-serif; }
+    main { max-width: 760px; margin: 0 auto; padding: 28px 18px 64px; }
+    a { color: var(--pink); }
+    h1 { font-size: 1.8rem; line-height: 1.15; margin: 0 0 8px; }
+    h2 { font-size: 1.15rem; margin: 28px 0 8px; }
+    p, li { color: var(--fg); }
+    .note { color: var(--muted); }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 14px 0; }
+    code { font-family: ui-monospace, monospace; font-size: 0.92em; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+    th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  </style>
+</head>
+<body>
+  <main>
+    <p><a href="index.html">Voltar ao CELBREA.IA</a></p>
+    <h1>Sistema do pacote CELBREA.IA</h1>
+    <p class="note">Este é o aplicativo que veio no ZIP, não o mockup de apresentação. O mockup fica em outra pasta e só demonstra a linha de cuidado. O sistema abaixo é o que cadastra profissional, lê o adesivo, classifica o teste e grava o registro.</p>
+
+    <div class="card">
+      <h2>O que o pacote já faz</h2>
+      <table>
+        <thead><tr><th>Parte</th><th>Função</th></tr></thead>
+        <tbody>
+          <tr><td>Acesso</td><td>Cadastro do profissional, confirmação de e-mail, senha, termo LGPD e liberação pelo administrador.</td></tr>
+          <tr><td>Paciente</td><td>Identificação, consentimento, solicitante, peso, altura e dados clínicos do teste.</td></tr>
+          <tr><td>Precauções e questionário</td><td>Condições do exame, histórico hormonal, mamas, risco e exames de imagem.</td></tr>
+          <tr><td>Leitura</td><td>Foto no próprio aparelho ou digitação das seções A, B e C, lados esquerdo e direito. A foto não é enviada nem salva.</td></tr>
+          <tr><td>Resultado</td><td>Regra das colunas: inconclusivo, significativo ou não significativo, com laudo para a paciente.</td></tr>
+          <tr><td>Registros</td><td>Lista, reabertura, exportação e gestão de profissionais liberados.</td></tr>
+          <tr><td>Parâmetros</td><td>Texto do protocolo de leitura que acompanha o aplicativo.</td></tr>
+          <tr><td>Cuidado</td><td>Referência quando o teste é significativo, contrarreferência pelo BI-RADS, e cadastro de estado, município, unidade, usuário, SKU, vínculo, regra, permissão e matrícula.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Aba Cuidado</h2>
+    <p>Depois de um teste salvo, a aba Cuidado abre a referência só no resultado significativo e registra a contrarreferência pelo BI-RADS. No mesmo lugar ficam os cadastros de estado, município, unidade, usuário, SKU, vínculo, regra, permissão e matrícula. Acompanhar a pessoa cria a matrícula no SKU do tratamento e grava o elemento preditivo que já saiu do teste: fase, painel e se a referência pode abrir. O identificador do profissional, quando o usuário é profissional, aponta para <code>profissionais</code>. A matrícula pode apontar para <code>registros</code>.</p>
+    <p>A mesma aba mostra o plano que já está em uso: autenticação e aprovação do profissional, versão do médico, vinculação, dashboard do gestor, proposta automática confirmada pelo profissional, mensageria interna e a <a href="paciente.html">versão da paciente</a>. O plano completo está em <code>docs/specs/2026-11-09-plano-modulos.md</code>. Para gravar mensagens no banco, execute <a href="mensagens.sql"><code>mensagens.sql</code></a> depois do <code>schema.sql</code>.</p>
+
+    <h2>Por que a tela pede configuração</h2>
+    <p>O ZIP não traz a senha do banco. O arquivo <code>config.js</code> ainda está com os textos <code>COLE_AQUI_...</code>. Enquanto isso, o aplicativo mostra “Configuração pendente” e não abre o cadastro. O restante do sistema já está nesta pasta.</p>
+
+    <h2>Instalação</h2>
+    <p>Duas peças: o banco no Supabase, região São Paulo, e este site. Tempo estimado: 20 a 30 minutos.</p>
+    <ol>
+      <li>Crie um projeto no Supabase com o nome <code>celbrea-ia</code> e a região South America (São Paulo).</li>
+      <li>No SQL Editor, execute <a href="schema.sql"><code>schema.sql</code></a> e, em seguida, <a href="cadastro.sql"><code>cadastro.sql</code></a>. Os dois podem rodar de novo sem apagar dados. O segundo liga usuário, unidade e matrícula às tabelas <code>profissionais</code> e <code>registros</code> que já existem.</li>
+      <li>Em Authentication, deixe o e-mail ligado, a confirmação de e-mail ligada e a senha mínima em 8 caracteres.</li>
+      <li>Copie a Project URL e a chave anon public para <code>config.js</code>. Não use a chave service_role.</li>
+      <li>Publique a pasta <code>clinical</code>. No Supabase, em Authentication, URL Configuration, coloque o mesmo endereço do site em Site URL e em Redirect URLs.</li>
+      <li>Crie o seu cadastro no site, confirme o e-mail e rode no SQL Editor: <code>update public.profissionais set ativo = true, papel = 'admin' where email = 'seu-email@exemplo.com';</code></li>
+      <li>Cada profissional cria o próprio cadastro. Em Registros, o administrador libera o acesso. Só quem está liberado vê e grava testes.</li>
+    </ol>
+    <p>O script <a href="seguranca-storage.sql"><code>seguranca-storage.sql</code></a> é opcional. Ele cria um espaço privado no Supabase para quem for publicar o aplicativo protegido, em que só o profissional liberado baixa o código depois do login.</p>
+
+    <h2>O que não é o sistema do ZIP</h2>
+    <p>A pasta <code>mockup</code> é a maquete de apresentação, com idiomas e painéis de estoque. Ela não lê o adesivo e não grava no Supabase. Os arquivos compactados dentro de <code>PASTAS ZIPADAS</code> são versões anteriores do mesmo aplicativo. A versão usada aqui é a pasta solta <code>celbrea-ia</code> do pacote, que contém o aplicativo completo.</p>
+
+    <p><a href="index.html">Abrir o CELBREA.IA</a></p>
+  </main>
+</body>
+</html>

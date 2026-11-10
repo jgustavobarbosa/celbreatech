@@ -139,4 +139,4 @@ O spec entra em `docs/specs/` neste repositório. A implementação da aba Cuida
 |---|---|---|
 | 1. Elaboração | escrita em 2026-11-09 | este arquivo |
 | 2. Revisão do spec | aberta | aguarda leitura antes de novo código |
-| 3 a 8 | não iniciadas no git | rascunho da aba Cuidado existe só na pasta local e na VPS |
+| 3. Implementação | em curso | cuidado, cadastros e módulos do plano `2026-11-09-plano-modulos.md` |
