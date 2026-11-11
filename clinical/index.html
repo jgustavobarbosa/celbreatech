@@ -299,12 +299,12 @@ th[aria-sort="ascending"] .sortb::after { content: " ↑"; } th[aria-sort="desce
     </div>
 
     <div class="card" id="g-signup" hidden>
-      <h2>Cadastro do profissional</h2>
-      <p class="note">Crie seu acesso individual. Depois de confirmar o e-mail, o administrador libera o seu acesso aos dados das pacientes.</p>
+      <h2>Cadastro</h2>
+      <p class="note">Quem se cadastra entra como paciente e segue para a ficha do sistema. Médico e os demais perfis só são liberados pela administradora da plataforma.</p>
       <div class="grid">
         <label class="f" style="grid-column:1/-1"><span>Nome completo</span><input class="in" id="g-nome" autocomplete="name" autocapitalize="words"></label>
         <label class="f"><span>E-mail</span><input class="in" id="g-email" type="email" inputmode="email" autocomplete="username" autocapitalize="off"></label>
-        <label class="f"><span>Registro profissional (CRM, COREN…)</span><input class="in" id="g-reg" autocomplete="off"></label>
+        <label class="f"><span>Registro profissional, se houver (CRM, COREN…)</span><input class="in" id="g-reg" autocomplete="off"></label>
         <label class="f"><span>Senha (mín. 8 caracteres, com letras e números)</span><input class="in" id="g-pw" type="password" autocomplete="new-password"></label>
         <label class="f"><span>Confirmar senha</span><input class="in" id="g-pw2" type="password" autocomplete="new-password"></label>
       </div>
@@ -336,11 +336,13 @@ th[aria-sort="ascending"] .sortb::after { content: " ↑"; } th[aria-sort="desce
         <label class="f"><span>E-mail</span><input class="in" id="g-lemail" type="email" inputmode="email" autocomplete="username" autocapitalize="off"></label>
         <label class="f"><span>Senha</span><input class="in" id="g-lpw" type="password" autocomplete="current-password"></label>
       </div>
-      <div class="nav"><button type="button" class="btn" id="g-forgot">Esqueci a senha</button><button type="button" class="btn" id="g-tosignup">Criar cadastro</button><button type="button" class="btn primary" id="g-enter">Entrar</button></div>
+      <div class="nav"><button type="button" class="btn" id="g-tosignup">Criar cadastro</button><button type="button" class="btn primary" id="g-enter">Entrar</button></div>
       <p class="save-msg" id="g-login-msg" aria-live="polite"></p>
-      <div class="forgot" id="g-forgot-box" hidden>
-        <p>Informe o e-mail do cadastro acima e toque em enviar. Você vai receber um link para criar uma nova senha.</p>
-        <button type="button" class="btn" id="g-sendreset">Enviar link de nova senha</button>
+      <div class="forgot" id="g-senha-box">
+        <p>Atualize a senha deste e-mail e entre em seguida. Este campo não envia outro e-mail e não passa pelo limite do cadastro.</p>
+        <label class="f"><span>Nova senha (mín. 8 caracteres, com letras e números)</span><input class="in" id="g-spw" type="password" autocomplete="new-password"></label>
+        <label class="f"><span>Confirmar nova senha</span><input class="in" id="g-spw2" type="password" autocomplete="new-password"></label>
+        <button type="button" class="btn primary" id="g-senha-ok">Atualizar senha e entrar</button>
       </div>
     </div>
 
@@ -371,6 +373,14 @@ th[aria-sort="ascending"] .sortb::after { content: " ↑"; } th[aria-sort="desce
       <p class="save-msg" id="g-reaccept-msg" aria-live="polite"></p>
     </div>
 
+    <div class="card" id="g-estado" hidden>
+      <h2>Vincular o estado</h2>
+      <p class="note">Sua entrada já é de paciente. Escolha o estado para vincular e siga para o cadastro da ficha.</p>
+      <label class="f"><span>Estado</span><select class="in" id="g-estado-sel"><option value="">Selecione</option></select></label>
+      <div class="nav"><button type="button" class="btn primary" id="g-estado-ok">Continuar o cadastro</button></div>
+      <p class="save-msg" id="g-estado-msg" aria-live="polite"></p>
+    </div>
+
     <div class="card" id="g-pending" hidden>
       <h2>Cadastro aguardando liberação</h2>
       <p class="note" id="g-pending-msg">Seu cadastro foi criado e o termo LGPD foi registrado. Por segurança, o acesso aos dados das pacientes só é liberado depois que o administrador da instituição aprovar o seu cadastro. Tente entrar novamente após a liberação.</p>
@@ -388,6 +398,7 @@ th[aria-sort="ascending"] .sortb::after { content: " ↑"; } th[aria-sort="desce
     </div>
     <div class="headacts">
       <span class="me" id="me"></span>
+      <a class="reset" id="go-dash" href="dashboard.html">Dashboard</a>
       <a class="reset" href="guia.html">Guia</a>
       <a class="reset" href="paciente.html">Paciente</a>
       <button type="button" class="reset" id="reset">Nova paciente</button>
@@ -430,6 +441,8 @@ th[aria-sort="ascending"] .sortb::after { content: " ↑"; } th[aria-sort="desce
   <section class="panel" id="paciente" hidden>
     <div class="card">
       <h2>Identificação</h2>
+      <p class="note" id="paciente-entrada" hidden>Você entrou como paciente. O perfil de médico, ou outro perfil de cuidado, depende da liberação da administradora.</p>
+      <p class="note" id="paciente-estado" hidden></p>
       <p class="note">A idade é calculada a partir da data de nascimento e da data do teste.</p>
       <div class="grid">
         <label class="f" style="grid-column:1/-1"><span>Nome da paciente</span><input class="in" id="f-nome" data-k="nome" autocomplete="off" autocapitalize="words"></label>
@@ -591,6 +604,7 @@ th[aria-sort="ascending"] .sortb::after { content: " ↑"; } th[aria-sort="desce
         <button type="button" class="btn primary rep-btn" id="rep-pdf" disabled>Baixar PDF</button>
         <button type="button" class="btn rep-btn" id="rep-png" disabled>Baixar imagem (PNG)</button>
         <button type="button" class="btn rep-btn" id="rep-copy" disabled>Copiar mensagem</button>
+        <button type="button" class="btn rep-btn" id="rep-send" disabled>Enviar resultado por e-mail</button>
         <a class="btn" id="rep-wa" href="#" target="_blank" rel="noopener">Abrir WhatsApp</a>
         <a class="btn" id="rep-mail" href="#" target="_blank" rel="noopener">Abrir e-mail</a>
       </div>
@@ -633,7 +647,7 @@ th[aria-sort="ascending"] .sortb::after { content: " ↑"; } th[aria-sort="desce
       <p class="empty" id="reg-empty">Carregando registros…</p>
       <div class="consents" id="profs" hidden>
         <h3>Profissionais cadastrados <span class="sub2" id="profs-pend"></span></h3>
-        <p class="note">Somente administradores veem esta lista. Libere apenas quem atende ou analisa os dados das pacientes.</p>
+        <p class="note">Somente a administradora vê esta lista. Quem se cadastra já entra como paciente. Médico e os demais perfis são autorizados aqui.</p>
         <div class="tblwrap"><table class="ptbl regtbl"><thead><tr><th>Profissional</th><th>Registro</th><th>Situação</th><th><span class="sr">Ações</span></th></tr></thead><tbody id="profs-body"></tbody></table></div>
       </div>
       <div class="consents" id="consents" hidden>
@@ -763,6 +777,7 @@ th[aria-sort="ascending"] .sortb::after { content: " ↑"; } th[aria-sort="desce
 <script src="care.js"></script>
 <script src="cadastro.js"></script>
 <script src="modulos.js"></script>
+<script src="mail.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <script>
 (function () {
@@ -791,7 +806,7 @@ th[aria-sort="ascending"] .sortb::after { content: " ↑"; } th[aria-sort="desce
   const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt !== undefined) e.textContent = txt; return e; };
 
   // ===== Estado =====
-  let S, src, conf, origin = {}, photos = [], aiInfo = null, confirmed = false, tab = 'paciente';
+  let S, src, conf, origin = {}, photos = [], aiInfo = null, confirmed = false, tab = 'paciente', modoPaciente = false;
   function fresh() { S = { data_teste: today() }; src = {}; conf = {}; origin = {}; if (photos) photos.forEach((p) => URL.revokeObjectURL(p.url)); photos = []; aiInfo = null; confirmed = false; }
   fresh();
   const hotData = window.claude && window.claude.hot && window.claude.hot.data;
@@ -823,6 +838,7 @@ th[aria-sort="ascending"] .sortb::after { content: " ↑"; } th[aria-sort="desce
   // ===== Abas =====
   const TABS = ['paciente', 'precaucoes', 'questionario', 'historico', 'resultados', 'resumo', 'registros', 'parametros', 'cuidado'];
   function show(id, scroll) {
+    if (modoPaciente && id !== 'paciente') id = 'paciente';
     tab = id;
     $$('.panel').forEach((p) => { p.hidden = p.id !== id; });
     $$('.tab').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.tab === id)));
@@ -2178,7 +2194,7 @@ th[aria-sort="ascending"] .sortb::after { content: " ↑"; } th[aria-sort="desce
   const CFG = window.CELBREA_CONFIG || {};
   let sb = null, account = null, isAdmin = false, idleT = null, regsTimer = null, consList = [], profs = [], fails = 0, blockUntil = 0, recovering = false;
   const G = (id) => document.getElementById(id);
-  const gateViews = ['g-loading', 'g-config', 'g-off', 'g-signup', 'g-confirm', 'g-login', 'g-newpw', 'g-reaccept', 'g-pending'];
+  const gateViews = ['g-loading', 'g-config', 'g-off', 'g-signup', 'g-confirm', 'g-login', 'g-newpw', 'g-reaccept', 'g-estado', 'g-pending'];
   function gateShow(v) { gateViews.forEach((x) => { G(x).hidden = x !== v; }); G('gate').hidden = false; root.hidden = true; window.scrollTo({ top: 0 }); }
   function gmsg(id, t, err) { const m = G(id); m.textContent = t; m.classList.toggle('err', !!err); }
   document.querySelectorAll('.terms-v').forEach((e) => { e.textContent = TERMS_V; });
@@ -2213,6 +2229,8 @@ th[aria-sort="ascending"] .sortb::after { content: " ↑"; } th[aria-sort="desce
     const { data, error } = await sb.from('registros').select('id,dados').order('salvo_em', { ascending: false }).limit(1000);
     if (error) { regsState = 'off'; regMsg('Não foi possível carregar os registros. Verifique a conexão.', true); renderRegs(); return; }
     regs = data.map((r) => ({ ...r.dados, id: r.id })); regsState = 'ok'; renderRegs(); if (tab === 'cuidado') renderCuidado();
+    const abrir = new URLSearchParams(location.search).get('abrir');
+    if (abrir) { const alvo = regs.find((r) => r.id === abrir); if (alvo) openReg(alvo); }
   }
   async function loadAdmin() {
     if (!isAdmin) { consList = []; profs = []; renderConsents([]); renderProfs(); return; }
@@ -2269,8 +2287,32 @@ th[aria-sort="ascending"] .sortb::after { content: " ↑"; } th[aria-sort="desce
     account = { nome: p.nome, email: p.email, registro: p.registro || '' };
     isAdmin = p.ativo && p.papel === 'admin';
     if (p.termos_versao !== TERMS_V) { G('g-reaccept-cb').checked = false; gmsg('g-reaccept-msg', ''); gateShow('g-reaccept'); return; }
-    if (!p.ativo) { gateShow('g-pending'); await sb.auth.signOut(); return; }
+    if (!p.ativo) { await entrarComoPaciente(); return; }
+    modoPaciente = false;
     startSession();
+  }
+  async function contaLocal(acao, dados) {
+    const res = await fetch('/celbrea/api/conta', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(Object.assign({ acao: acao }, dados))
+    });
+    let body = {};
+    try { body = await res.json(); } catch (e) {}
+    return { ok: res.ok, status: res.status, motivo: body.motivo || '' };
+  }
+  function textoConta(r) {
+    if (r.motivo === 'admin') return 'A conta da administradora não é alterada por este campo. Entre com a senha atual.';
+    if (r.motivo === 'ausente') return 'Este e-mail ainda não tem cadastro. Use Criar cadastro.';
+    if (r.motivo === 'limite') return 'Muitas tentativas neste momento. Aguarde alguns minutos e tente de novo.';
+    if (r.motivo === 'dados' || r.motivo === 'nome') return 'Revise o e-mail, o nome e a senha.';
+    return 'Não foi possível concluir. Tente de novo em instantes.';
+  }
+  async function entrarComSenha(email, pw) {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
+    if (error || !data.session) return false;
+    await afterAuth(data.session);
+    return true;
   }
   async function createAccount() {
     const nome = G('g-nome').value.trim(), email = normEmail(G('g-email').value), reg = G('g-reg').value.trim(), pw = G('g-pw').value, pw2 = G('g-pw2').value;
@@ -2281,12 +2323,12 @@ th[aria-sort="ascending"] .sortb::after { content: " ↑"; } th[aria-sort="desce
     if (!G('g-accept').checked) return gmsg('g-signup-msg', 'Para usar o aplicativo é preciso aceitar o termo LGPD.', true);
     const btn = G('g-create'); btn.disabled = true; gmsg('g-signup-msg', 'Criando cadastro…');
     try {
-      const { data, error } = await sb.auth.signUp({ email, password: pw, options: { emailRedirectTo: siteUrl(), data: { nome, registro: reg, termos_versao: TERMS_V, termos_aceito_em: new Date().toISOString() } } });
-      if (error) { gmsg('g-signup-msg', /registered|exists/i.test(error.message) ? 'Este e-mail já tem cadastro. Use “Já tenho cadastro” para entrar.' : 'Não foi possível criar o cadastro: ' + error.message, true); return; }
+      const criado = await contaLocal('criar', { nome, email, senha: pw, registro: reg });
+      if (!criado.ok) { gmsg('g-signup-msg', textoConta(criado), true); return; }
+      if (window.CelbreaMail) CelbreaMail.enviar('cadastro', { nome, email, registro: reg });
       G('g-pw').value = ''; G('g-pw2').value = '';
-      if (data.session) { await afterAuth(data.session); return; }
-      G('g-confirm-msg').textContent = 'Enviamos um link de confirmação para ' + email + '. Abra o e-mail e toque no link. Depois, o administrador da instituição libera o seu acesso.';
-      G('g-lemail').value = email; gateShow('g-confirm');
+      G('g-lemail').value = email;
+      if (!(await entrarComSenha(email, pw))) gmsg('g-signup-msg', 'O cadastro foi gravado, mas a entrada falhou. Use Entrar com esta senha.', true);
     } catch (e) { gmsg('g-signup-msg', 'Não foi possível criar o cadastro. Verifique a conexão e tente de novo.', true); }
     finally { btn.disabled = false; }
   }
@@ -2308,21 +2350,97 @@ th[aria-sort="ascending"] .sortb::after { content: " ↑"; } th[aria-sort="desce
     finally { btn.disabled = false; }
   }
   function showLogin(note) {
-    G('g-login-note').textContent = note || 'Use o e-mail e a senha do seu cadastro.';
-    G('g-forgot-box').hidden = true; gmsg('g-login-msg', '');
+    G('g-login-note').textContent = note || 'Use o e-mail e a senha do seu cadastro. Para trocar a senha, use o campo abaixo.';
+    gmsg('g-login-msg', '');
     gateShow('g-login');
+  }
+  function aplicarModoPaciente() {
+    $$('.tab').forEach((t) => { t.hidden = modoPaciente && t.dataset.tab !== 'paciente'; });
+    const nota = $('#paciente-entrada');
+    const uf = $('#paciente-estado');
+    const dash = $('#go-dash');
+    if (nota) nota.hidden = !modoPaciente;
+    if (uf) uf.hidden = !modoPaciente;
+    if (dash) dash.hidden = modoPaciente;
+  }
+  async function entrarComoPaciente() {
+    modoPaciente = true;
+    isAdmin = false;
+    const lista = await sb.from('estados').select('id,sigla,nome').eq('ativo', true).order('nome');
+    const meus = await sb.from('usuarios').select('id,estado_id,nome').eq('profissional_id', myId).eq('tipo', 'paciente').limit(1);
+    const row = meus.data && meus.data[0];
+    const estados = (lista.data && lista.data.length) ? lista.data : (window.CelbreaCadastro ? CelbreaCadastro.ESTADOS_BRASIL.map(([sigla, nome]) => ({ id: '', sigla, nome })) : []);
+    if (row && row.estado_id) {
+      const uf = estados.find((e) => e.id === row.estado_id);
+      startSession();
+      const aviso = $('#paciente-estado');
+      if (aviso) aviso.textContent = uf ? 'Estado vinculado: ' + uf.nome + ' (' + uf.sigla + ').' : 'Estado vinculado.';
+      return;
+    }
+    const sel = G('g-estado-sel');
+    sel.replaceChildren();
+    const vazio = document.createElement('option');
+    vazio.value = '';
+    vazio.textContent = 'Selecione';
+    sel.appendChild(vazio);
+    estados.forEach((e) => {
+      if (!e.id) return;
+      const op = document.createElement('option');
+      op.value = e.id;
+      op.textContent = e.nome + ' (' + e.sigla + ')';
+      sel.appendChild(op);
+    });
+    gmsg('g-estado-msg', estados.some((e) => e.id) ? '' : 'Os estados ainda não estão no banco.', true);
+    gateShow('g-estado');
+  }
+  async function confirmarEstado() {
+    const estadoId = G('g-estado-sel').value;
+    if (!estadoId) return gmsg('g-estado-msg', 'Escolha o estado.', true);
+    const btn = G('g-estado-ok');
+    btn.disabled = true;
+    const criado = await sb.from('usuarios').insert({
+      nome: account.nome || 'Paciente',
+      documento: '',
+      tipo: 'paciente',
+      profissional_id: myId,
+      estado_id: estadoId,
+      ativo: true
+    }).select('id,estado_id').single();
+    btn.disabled = false;
+    if (criado.error) return gmsg('g-estado-msg', 'Não foi possível vincular o estado.', true);
+    const op = G('g-estado-sel').selectedOptions[0];
+    startSession();
+    const aviso = $('#paciente-estado');
+    if (aviso && op) aviso.textContent = 'Estado vinculado: ' + op.textContent + '.';
   }
   function startSession() {
     G('gate').hidden = true; root.hidden = false;
-    $('#me').textContent = account.nome + (account.registro ? ' · ' + account.registro : '') + (isAdmin ? ' · administrador' : '');
-    loadRegs(); loadAdmin();
-    clearInterval(regsTimer); regsTimer = setInterval(() => { if (!document.hidden) { loadRegs(); loadAdmin(); } }, 60000);
+    $('#me').textContent = account.nome + (account.registro ? ' · ' + account.registro : '') + (modoPaciente ? ' · paciente' : '') + (isAdmin ? ' · administrador' : '');
+    aplicarModoPaciente();
+    if (!modoPaciente) { loadRegs(); loadAdmin(); }
+    else {
+      const nome = $('#f-nome');
+      if (nome && !nome.value && account.nome) { nome.value = account.nome; nome.dispatchEvent(new Event('input', { bubbles: true })); }
+      show('paciente', false);
+    }
+    const nova = new URLSearchParams(location.search);
+    if (!modoPaciente && nova.get('nova') === '1' && !nova.get('abrir')) {
+      fresh();
+      const nomeNova = $('#f-nome');
+      const idNova = $('#f-idpac');
+      if (nomeNova && nova.get('nome')) { nomeNova.value = nova.get('nome'); nomeNova.dispatchEvent(new Event('input', { bubbles: true })); }
+      if (idNova && nova.get('idpac')) { idNova.value = nova.get('idpac'); idNova.dispatchEvent(new Event('input', { bubbles: true })); }
+      show('paciente', false);
+    }
+    clearInterval(regsTimer);
+    if (!modoPaciente) regsTimer = setInterval(() => { if (!document.hidden) { loadRegs(); loadAdmin(); } }, 60000);
     render(); armIdle();
     if (tab === 'cuidado' && window.__cadastroApi) window.__cadastroApi.sync();
   }
   function endSession(clear) {
     clearInterval(regsTimer); clearTimeout(idleT);
-    regs = []; regsState = 'loading'; isAdmin = false; profs = []; consList = [];
+    regs = []; regsState = 'loading'; isAdmin = false; modoPaciente = false; profs = []; consList = [];
+    aplicarModoPaciente();
     if (clear) { if (ctl) ctl.abort(); fresh(); currentId = null; savedSig = null; setSaveMsg(''); renderShots(); show('paciente', false); }
     render(); renderRegs(); renderProfs(); renderConsents([]);
   }
@@ -2349,12 +2467,20 @@ th[aria-sort="ascending"] .sortb::after { content: " ↑"; } th[aria-sort="desce
   G('g-tosignup').addEventListener('click', () => { gmsg('g-signup-msg', ''); gateShow('g-signup'); });
   G('g-confirm-ok').addEventListener('click', () => showLogin());
   G('g-pending-ok').addEventListener('click', () => showLogin());
-  G('g-forgot').addEventListener('click', () => { G('g-forgot-box').hidden = !G('g-forgot-box').hidden; });
-  G('g-sendreset').addEventListener('click', async () => {
-    const email = normEmail(G('g-lemail').value);
+  G('g-estado-ok').addEventListener('click', () => confirmarEstado());
+  G('g-senha-ok').addEventListener('click', async () => {
+    const email = normEmail(G('g-lemail').value), a = G('g-spw').value, b = G('g-spw2').value;
     if (!emailOk(email)) return gmsg('g-login-msg', 'Digite o e-mail do cadastro no campo E-mail.', true);
-    try { await sb.auth.resetPasswordForEmail(email, { redirectTo: siteUrl() }); } catch (e) {}
-    gmsg('g-login-msg', 'Se este e-mail estiver cadastrado, você vai receber um link para criar uma nova senha.');
+    if (!pwOk(a)) return gmsg('g-login-msg', 'A senha precisa ter pelo menos 8 caracteres, com letras e números.', true);
+    if (a !== b) return gmsg('g-login-msg', 'As senhas não conferem.', true);
+    const btn = G('g-senha-ok'); btn.disabled = true; gmsg('g-login-msg', 'Atualizando a senha…');
+    try {
+      const salvo = await contaLocal('senha', { email, senha: a });
+      if (!salvo.ok) { gmsg('g-login-msg', textoConta(salvo), true); return; }
+      G('g-spw').value = ''; G('g-spw2').value = ''; G('g-lpw').value = '';
+      if (!(await entrarComSenha(email, a))) gmsg('g-login-msg', 'A senha foi atualizada. Toque em Entrar.', true);
+    } catch (e) { gmsg('g-login-msg', 'Não foi possível atualizar a senha. Verifique a conexão.', true); }
+    finally { btn.disabled = false; }
   });
   G('g-savepw').addEventListener('click', async () => {
     const a = G('g-npw').value, b = G('g-npw2').value;
@@ -2382,9 +2508,10 @@ th[aria-sort="ascending"] .sortb::after { content: " ↑"; } th[aria-sort="desce
     if (!CFG.supabaseUrl || !CFG.supabaseAnonKey || /COLE_AQUI/.test(CFG.supabaseUrl + CFG.supabaseAnonKey) || !window.supabase) { gateShow('g-config'); return; }
     let store = null;
     try { sessionStorage.setItem('_t', '1'); sessionStorage.removeItem('_t'); store = sessionStorage; } catch (e) {}
-    sb = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey, { auth: { persistSession: !!store, storage: store || undefined, autoRefreshToken: true, detectSessionInUrl: true } });
+    sb = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey, { auth: { persistSession: !!store, storage: store || undefined, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'implicit' } });
     db = sb; regsState = 'loading';
-    recovering = /type=recovery/.test(location.hash);
+    const tipoRetorno = new URLSearchParams((location.hash || '').replace(/^#/, '')).get('type') || new URLSearchParams(location.search).get('type') || '';
+    recovering = tipoRetorno === 'recovery';
     sb.auth.onAuthStateChange((event) => {
       if (event === 'PASSWORD_RECOVERY') { recovering = true; gmsg('g-newpw-msg', ''); gateShow('g-newpw'); }
     });
@@ -2611,6 +2738,16 @@ th[aria-sort="ascending"] .sortb::after { content: " ↑"; } th[aria-sort="desce
   window.__cbReport = renderReportPreview;
   $('#rep-pdf').addEventListener('click', () => saveReport('pdf'));
   $('#rep-png').addEventListener('click', () => saveReport('png'));
+  $('#rep-send').addEventListener('click', async () => {
+    const ok = reportReady();
+    if (!ok.ok) { repMsg(ok.msg, true); return; }
+    if (!emailOk(S.email_pac || '')) { repMsg('Informe o e-mail da paciente na aba Paciente.', true); return; }
+    const session = sb ? (await sb.auth.getSession()).data.session : null;
+    if (!session || !window.CelbreaMail) { repMsg('Entre com um profissional liberado para enviar o resultado.', true); return; }
+    repMsg('Enviando resultado…');
+    const res = await CelbreaMail.enviar('resultado', { para: S.email_pac, nome: S.nome, mensagem: shareText() }, session.access_token);
+    repMsg(res.ok ? 'Resultado enviado para o e-mail da paciente.' : (res.motivo === 'resend_pendente' ? 'O envio ainda espera a chave da Resend no servidor.' : 'Não foi possível enviar o resultado.'), !res.ok);
+  });
   $('#rep-copy').addEventListener('click', () => {
     const txt = shareText(), b = $('#rep-copy');
     const done = (ok) => { b.textContent = ok ? 'Mensagem copiada' : 'Não foi possível copiar'; setTimeout(() => { b.textContent = 'Copiar mensagem'; }, 2200); };
@@ -2653,6 +2790,7 @@ th[aria-sort="ascending"] .sortb::after { content: " ↑"; } th[aria-sort="desce
           db: () => db,
           regs: () => regs,
           msg: cuidadoMsg,
+          token: async () => (sb ? (await sb.auth.getSession()).data.session : null)?.access_token,
           aplicar: async (reg) => {
             const applied = CelbreaModulos.aplicarProposta(reg);
             if (!applied.ok) return applied;

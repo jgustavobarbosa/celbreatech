@@ -12,6 +12,14 @@ function territorio(store) {
   return un.row;
 }
 
+test('os 27 estados ficam disponíveis para vínculo', () => {
+  const store = cad.emptyStore();
+  cad.seedEstados(store);
+  assert.equal(store.estados.length, 27);
+  assert.equal(new Set(store.estados.map((e) => e.sigla)).size, 27);
+  assert.ok(store.estados.some((e) => e.sigla === 'SP' && e.nome === 'São Paulo'));
+});
+
 test('SKUs básicos e regras de referência entram no cadastro', () => {
   const store = base();
   assert.equal(store.skus.length, 7);

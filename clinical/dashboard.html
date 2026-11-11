@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard Celbrea</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="config.js"></script>
+  <script src="care.js"></script>
+  <script src="painel.js"></script>
+  <style>
+    :root { --ink: #2A1F27; --muted: #6E6069; --line: #E6DCE2; --bg: #FBF8FA; --pink: #E5007D; --card: #fff; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 system-ui, sans-serif; }
+    a { color: var(--pink); }
+    button, .btn { font: inherit; border: 0; border-radius: 999px; padding: 10px 14px; background: var(--pink); color: #fff; cursor: pointer; text-decoration: none; display: inline-block; }
+    button.alt, a.alt { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+    button:disabled { opacity: .6; cursor: default; }
+    header { display: flex; justify-content: space-between; gap: 12px; align-items: center; padding: 16px 20px; background: #fff; border-bottom: 1px solid var(--line); }
+    header h1 { margin: 0; font-size: 22px; }
+    header p { margin: 2px 0 0; color: var(--muted); font-size: 14px; }
+    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: calc(100vh - 74px); }
+    nav { padding: 12px; border-right: 1px solid var(--line); background: #fff; }
+    nav h2 { margin: 14px 8px 6px; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+    nav button { display: block; width: 100%; text-align: left; background: transparent; color: var(--ink); border-radius: 10px; margin: 2px 0; }
+    nav button.on { background: #FDE7F3; color: var(--pink); }
+    main { padding: 20px; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+    .card, article { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; margin-top: 12px; }
+    .card strong { display: block; font-size: 28px; }
+    .card span, .note { color: var(--muted); }
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 16px; overflow: hidden; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .gate { max-width: 560px; margin: 48px auto; }
+    label { display: block; margin-top: 10px; font-size: 14px; }
+    input, textarea, select { width: 100%; margin-top: 4px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); font: inherit; }
+    .err { color: #9f1239; }
+    @media (max-width: 800px) { .layout { grid-template-columns: 1fr; } nav { border-right: 0; border-bottom: 1px solid var(--line); } }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Dashboard Celbrea</h1>
+      <p id="quem">Os números saem dos exames salvos.</p>
+    </div>
+    <div>
+      <a class="alt" href="index.html">Exame</a>
+      <button type="button" class="alt" id="sair" hidden>Sair</button>
+    </div>
+  </header>
+  <section class="gate card" id="gate">
+    <h2>Entrada</h2>
+    <p class="note" id="gate-msg">Carregando a sessão do exame…</p>
+    <p><a class="btn" href="index.html">Entrar pelo exame</a></p>
+  </section>
+  <div class="layout" id="app" hidden>
+    <nav>
+      <h2>Operação</h2>
+      <button type="button" data-view="painel" class="on">Dashboard Celbrea</button>
+      <button type="button" data-view="torre">Torre de controle</button>
+      <button type="button" data-view="triagem">Nova triagem</button>
+      <button type="button" data-view="fila">Fila do navegador</button>
+      <button type="button" data-view="ficha">Ficha do paciente</button>
+      <button type="button" data-view="cohorts">Cohorts e recorrência</button>
+      <button type="button" data-view="arquivo">Arquivo</button>
+      <button type="button" data-view="mensagens">Mensageria</button>
+      <h2>Capítulos</h2>
+      <div id="capitulos"></div>
+    </nav>
+    <main id="main"></main>
+  </div>
+  <script>
+    const CFG = window.CELBREA_CONFIG || {};
+    const P = window.CelbreaPainel;
+    const gate = document.getElementById('gate');
+    const app = document.getElementById('app');
+    const main = document.getElementById('main');
+    let sb = null, painel = null, view = 'painel', pacienteKey = '', capitulo = 'cadastro';
+
+    function esc(v) {
+      return String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+    function pacienteAtual() {
+      if (!painel) return null;
+      return painel.pacientes.find((p) => p.key === pacienteKey) || painel.pacientes[0] || null;
+    }
+    function linkExame(p, nova) {
+      if (!p) return 'index.html';
+      if (nova || !p.latest) {
+        const q = new URLSearchParams({ nova: '1', nome: p.nome || '', idpac: p.idPaciente || '' });
+        return 'index.html?' + q.toString();
+      }
+      return 'index.html?abrir=' + encodeURIComponent(p.latest.id);
+    }
+    function listaPacientes(itens, acao) {
+      if (!itens.length) return '<p class="note">Nenhuma paciente neste recorte. O próximo exame salvo entra aqui com a mesma ficha.</p>';
+      return '<table><thead><tr><th>Paciente</th><th>Resultado</th><th>Estado</th><th></th></tr></thead><tbody>' + itens.map((p) => {
+        const st = p.latest ? (P.STATUS[p.latest.status] || p.latest.status) : 'Sem exame';
+        return '<tr><td><b>' + esc(p.nome) + '</b><br><span class="note">' + esc(p.idPaciente || 'Sem identificação') + '</span></td><td>' + esc(st) + '</td><td>' + esc(p.estado) + '</td><td><button type="button" data-abrir="' + esc(p.key) + '">' + esc(acao) + '</button></td></tr>';
+      }).join('') + '</tbody></table>';
+    }
+    function linhas(items) {
+      return items.map((item) => '<p><b>' + esc(item.rotulo) + '.</b> ' + esc(item.valor) + '</p>').join('');
+    }
+    function desenhar() {
+      const atual = pacienteAtual();
+      if (atual) pacienteKey = atual.key;
+      document.querySelectorAll('nav button[data-view]').forEach((b) => b.classList.toggle('on', b.dataset.view === view));
+      document.querySelectorAll('#capitulos button').forEach((b) => b.classList.toggle('on', view === 'ficha' && b.dataset.cap === capitulo));
+      if (!painel) { main.innerHTML = '<p>Carregando…</p>'; return; }
+      const r = painel.resumo;
+      if (view === 'painel') {
+        main.innerHTML = '<div class="cards">'
+          + card(r.pacientes, 'Pacientes')
+          + card(r.total, 'Exames')
+          + card(r.ok, 'Sem alteração')
+          + card(r.alt, 'Alteração')
+          + card(r.inc, 'Inconclusivo')
+          + card(r.referenciasAbertas, 'Referências abertas')
+          + '</div>' + listaPacientes(painel.pacientes, 'Abrir ficha');
+      } else if (view === 'torre') {
+        main.innerHTML = painel.torre.length ? '<table><thead><tr><th>Estado</th><th>Pacientes</th><th>Sem alteração</th><th>Alteração</th><th>Inconclusivo</th><th>Fila</th></tr></thead><tbody>'
+          + painel.torre.map((t) => '<tr><td>' + esc(t.estado) + '</td><td>' + t.pacientes + '</td><td>' + t.ok + '</td><td>' + t.alt + '</td><td>' + t.inc + '</td><td>' + t.fila + '</td></tr>').join('')
+          + '</tbody></table>' : '<p class="note">A torre ainda não tem paciente.</p>';
+      } else if (view === 'triagem') {
+        main.innerHTML = '<p class="note">A triagem abre o exame que já existe. A leitura do adesivo não muda.</p><p><a class="btn" href="index.html?nova=1">Nova triagem</a></p>' + listaPacientes(painel.pacientes, 'Continuar esta paciente');
+      } else if (view === 'fila') {
+        main.innerHTML = '<p class="note">Entram aqui só as alterações com referência aberta ou ainda não encerrada.</p>' + listaPacientes(painel.fila, 'Abrir ficha');
+      } else if (view === 'cohorts') {
+        main.innerHTML = painel.cohorts.map((c) => '<article><h2>' + esc(c.titulo) + '</h2>' + c.pacientes.map((p) => '<p><button type="button" data-abrir="' + esc(p.key) + '">' + esc(p.nome) + '</button> ' + esc(p.recorrencia.proximo || 'sem data') + '</p>').join('') + '</article>').join('') || '<p class="note">Nenhum cohort ainda.</p>';
+      } else if (view === 'arquivo') {
+        const exames = [];
+        painel.pacientes.forEach((p) => (p.tests || []).forEach((t) => exames.push({ p: p, t: t })));
+        main.innerHTML = exames.length ? '<table><thead><tr><th>Data</th><th>Paciente</th><th>Resultado</th><th></th></tr></thead><tbody>'
+          + exames.map((item) => '<tr><td>' + esc(item.t.dataTeste || '—') + '</td><td>' + esc(item.p.nome) + '</td><td>' + esc(P.STATUS[item.t.status] || item.t.status) + '</td><td><a href="index.html?abrir=' + encodeURIComponent(item.t.id) + '">Abrir exame</a></td></tr>').join('')
+          + '</tbody></table>' : '<p class="note">Nenhum exame no arquivo.</p>';
+      } else if (view === 'mensagens') {
+        main.innerHTML = formularioMensagem(atual) + (painel.mensagens.length ? painel.mensagens.map((m) => '<article><h2>' + esc(m.assunto) + '</h2><p class="note">' + esc(m.destinatario) + ' · ' + esc(m.status) + '</p><p>' + esc(m.corpo) + '</p></article>').join('') : '<p class="note">Nenhuma mensagem gravada.</p>');
+      } else {
+        main.innerHTML = atual ? fichaHtml(atual) : '<p class="note">Nenhuma paciente para abrir. Salve um exame e a ficha aparece para este e para os próximos.</p>';
+      }
+    }
+    function card(n, rotulo) { return '<article class="card"><strong>' + n + '</strong><span>' + esc(rotulo) + '</span></article>'; }
+    function fichaHtml(p) {
+      const cap = P.CAPITULOS.find((c) => c[0] === capitulo) || P.CAPITULOS[0];
+      const bloco = p.capitulos[cap[0]] || [];
+      return '<p class="note">' + esc(p.nome) + (p.idPaciente ? ' · ' + esc(p.idPaciente) : '') + '</p><h2>' + esc(cap[1]) + '</h2>' + linhas(bloco)
+        + '<p><a class="btn" href="' + esc(linkExame(p, false)) + '">Abrir exame</a> <a class="alt" href="' + esc(linkExame(p, true)) + '">Nova triagem desta paciente</a></p>'
+        + '<label>Trocar paciente<select id="escolhe">' + painel.pacientes.map((item) => '<option value="' + esc(item.key) + '"' + (item.key === p.key ? ' selected' : '') + '>' + esc(item.nome) + '</option>').join('') + '</select></label>';
+    }
+    function formularioMensagem(p) {
+      const opts = painel.pacientes.map((item) => '<option value="' + esc(item.key) + '"' + (p && item.key === p.key ? ' selected' : '') + '>' + esc(item.nome) + '</option>').join('');
+      return '<article><h2>Nova mensagem interna</h2><p class="note">Fica no sistema, ligada à paciente e ao exame mais recente. Não sai por WhatsApp ou SMS.</p><label>Paciente<select id="msg-pac">' + opts + '</select></label><label>Assunto<input id="msg-assunto" maxlength="120"></label><label>Texto<textarea id="msg-corpo" rows="4"></textarea></label><p><button type="button" id="msg-ok">Gravar mensagem</button></p><p class="note" id="msg-aviso"></p></article>';
+    }
+    function mostrar(nome, cap) {
+      view = nome;
+      if (cap) capitulo = cap;
+      location.hash = nome + (nome === 'ficha' ? '/' + capitulo : '');
+      desenhar();
+    }
+    async function carregar() {
+      const [regs, usuarios, estados, vinculos, unidades, msgs] = await Promise.all([
+        sb.from('registros').select('id,dados,status').order('salvo_em', { ascending: false }).limit(1000),
+        sb.from('usuarios').select('id,nome,documento,tipo,estado_id,ativo'),
+        sb.from('estados').select('id,sigla,nome'),
+        sb.from('vinculos').select('id,usuario_id,unidade_id,fim'),
+        sb.from('unidades').select('id,nome'),
+        sb.from('mensagens').select('id,destinatario,assunto,corpo,status,registro_id,criada_em').order('criada_em', { ascending: false }).limit(200)
+      ]);
+      if (regs.error) throw regs.error;
+      painel = P.montar({
+        registros: regs.data || [],
+        usuarios: usuarios.data || [],
+        estados: estados.data || [],
+        vinculos: vinculos.data || [],
+        unidades: unidades.data || [],
+        mensagens: msgs.data || []
+      });
+      desenhar();
+    }
+    async function gravarMensagem() {
+      const aviso = document.getElementById('msg-aviso');
+      const key = document.getElementById('msg-pac').value;
+      const p = painel.pacientes.find((item) => item.key === key);
+      const assunto = document.getElementById('msg-assunto').value.trim();
+      const corpo = document.getElementById('msg-corpo').value.trim();
+      if (!p || assunto.length < 3 || corpo.length < 3) { aviso.textContent = 'Escolha a paciente e escreva assunto e texto.'; aviso.className = 'err'; return; }
+      const { error } = await sb.from('mensagens').insert({
+        destinatario: p.nome,
+        assunto: assunto,
+        corpo: corpo,
+        status: 'pronta',
+        registro_id: p.latest ? p.latest.id : null
+      });
+      if (error) { aviso.textContent = 'Não foi possível gravar a mensagem.'; aviso.className = 'err'; return; }
+      await carregar();
+      mostrar('mensagens');
+    }
+    document.getElementById('capitulos').innerHTML = P.CAPITULOS.map((c) => '<button type="button" data-cap="' + c[0] + '">' + c[1] + '</button>').join('');
+    document.body.addEventListener('click', (ev) => {
+      const viewBtn = ev.target.closest('button[data-view]');
+      const capBtn = ev.target.closest('button[data-cap]');
+      const abrir = ev.target.closest('button[data-abrir]');
+      if (viewBtn) { pacienteKey = pacienteAtual() ? pacienteAtual().key : ''; mostrar(viewBtn.dataset.view); }
+      else if (capBtn) mostrar('ficha', capBtn.dataset.cap);
+      else if (abrir) {
+        pacienteKey = abrir.getAttribute('data-abrir');
+        const escolhida = painel.pacientes.find((item) => item.key === pacienteKey);
+        if (view === 'triagem' && escolhida) { location.href = linkExame(escolhida, true); return; }
+        mostrar('ficha', view === 'cohorts' ? 'recorrencia' : (view === 'fila' ? 'referencia' : 'cadastro'));
+      }
+      else if (ev.target.id === 'msg-ok') gravarMensagem();
+    });
+    document.body.addEventListener('change', (ev) => {
+      if (ev.target.id === 'escolhe') { pacienteKey = ev.target.value; desenhar(); }
+    });
+    document.getElementById('sair').addEventListener('click', async () => { await sb.auth.signOut(); location.href = 'index.html'; });
+
+    (async () => {
+      if (!CFG.supabaseUrl || /COLE_AQUI/.test(CFG.supabaseUrl + CFG.supabaseAnonKey)) {
+        document.getElementById('gate-msg').textContent = 'A configuração do banco ainda não está neste arquivo.';
+        return;
+      }
+      let store = null;
+      try { sessionStorage.setItem('_t', '1'); sessionStorage.removeItem('_t'); store = sessionStorage; } catch (e) {}
+      sb = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey, { auth: { persistSession: !!store, storage: store || undefined, autoRefreshToken: true } });
+      const { data } = await sb.auth.getSession();
+      if (!data.session) {
+        document.getElementById('gate-msg').textContent = 'Entre pelo exame. O dashboard usa a mesma sessão e os mesmos cadastros.';
+        return;
+      }
+      const prof = await sb.from('profissionais').select('nome,ativo,papel').eq('id', data.session.user.id).maybeSingle();
+      if (!prof.data || !prof.data.ativo) {
+        document.getElementById('gate-msg').textContent = 'Este painel abre para o perfil autorizado pela administradora. A entrada de paciente continua no exame.';
+        return;
+      }
+      document.getElementById('quem').textContent = prof.data.nome + (prof.data.papel === 'admin' ? ' · administradora' : '');
+      document.getElementById('sair').hidden = false;
+      gate.hidden = true;
+      app.hidden = false;
+      const hash = location.hash.replace('#', '').split('/');
+      if (hash[0]) view = hash[0];
+      if (hash[1]) capitulo = hash[1];
+      try { await carregar(); }
+      catch (e) { main.innerHTML = '<p class="err">Não foi possível ler os exames. Confirme se este perfil está liberado.</p>'; }
+    })();
+  </script>
+</body>
+</html>

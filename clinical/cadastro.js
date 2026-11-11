@@ -13,7 +13,7 @@
     municipios: { estadoId: 'estado_id', nome: 'nome', ibge: 'ibge', ativo: 'ativo' },
     unidades: { municipioId: 'municipio_id', nome: 'nome', cnes: 'cnes', tipo: 'tipo', ativo: 'ativo' },
     skus: { codigo: 'codigo', nome: 'nome', tipo: 'tipo', ativo: 'ativo' },
-    usuarios: { nome: 'nome', documento: 'documento', tipo: 'tipo', profissionalId: 'profissional_id', ativo: 'ativo' },
+    usuarios: { nome: 'nome', documento: 'documento', tipo: 'tipo', profissionalId: 'profissional_id', estadoId: 'estado_id', ativo: 'ativo' },
     vinculos: { usuarioId: 'usuario_id', unidadeId: 'unidade_id', papel: 'papel', inicio: 'inicio', fim: 'fim' },
     regras: { codigo: 'codigo', quandoStatus: 'quando_status', acao: 'acao', skuCodigo: 'sku_codigo', descricao: 'descricao', ativo: 'ativo' },
     permissoes: { papel: 'papel', recurso: 'recurso', acao: 'acao' },
@@ -94,6 +94,7 @@
     if (tabela === 'unidades' && r.cnes === undefined) r.cnes = '';
     if (tabela === 'usuarios' && r.documento === undefined) r.documento = '';
     if (tabela === 'usuarios' && (r.tipo === 'paciente' || r.profissionalId === '')) r.profissionalId = null;
+    if (tabela === 'usuarios' && r.estadoId === '') r.estadoId = null;
     if (tabela === 'regras' && r.skuCodigo === '') r.skuCodigo = null;
     if (tabela === 'matriculas' && r.unidadeId === '') r.unidadeId = null;
     if (tabela === 'matriculas' && r.registroId === '') r.registroId = null;
@@ -437,8 +438,23 @@
     }[motivo] || 'Não foi possível concluir o cadastro.';
   }
 
+  const ESTADOS_BRASIL = [
+    ['AC', 'Acre'], ['AL', 'Alagoas'], ['AP', 'Amapá'], ['AM', 'Amazonas'], ['BA', 'Bahia'],
+    ['CE', 'Ceará'], ['DF', 'Distrito Federal'], ['ES', 'Espírito Santo'], ['GO', 'Goiás'],
+    ['MA', 'Maranhão'], ['MT', 'Mato Grosso'], ['MS', 'Mato Grosso do Sul'], ['MG', 'Minas Gerais'],
+    ['PA', 'Pará'], ['PB', 'Paraíba'], ['PR', 'Paraná'], ['PE', 'Pernambuco'], ['PI', 'Piauí'],
+    ['RJ', 'Rio de Janeiro'], ['RN', 'Rio Grande do Norte'], ['RS', 'Rio Grande do Sul'],
+    ['RO', 'Rondônia'], ['RR', 'Roraima'], ['SC', 'Santa Catarina'], ['SP', 'São Paulo'],
+    ['SE', 'Sergipe'], ['TO', 'Tocantins']
+  ];
+  function seedEstados(store) {
+    ESTADOS_BRASIL.forEach(([sigla, nome]) => {
+      if (!store.estados.some((e) => e.sigla === sigla)) add(store, 'estados', { sigla, nome, ativo: true });
+    });
+    return store.estados;
+  }
   return {
-    TABELAS, emptyStore, seedBasics, pode, criar, atualizar, apagar,
+    TABELAS, ESTADOS_BRASIL, emptyStore, seedBasics, seedEstados, pode, criar, atualizar, apagar,
     vincularTratamento, elementosPreditivos, skuCodigoPara, toDb, fromDb, mount
   };
 });

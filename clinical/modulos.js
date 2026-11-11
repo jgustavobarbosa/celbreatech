@@ -114,7 +114,7 @@
       const cards = catalogo().map((m) => '<p><b>' + esc(m.titulo) + '</b> · ' + esc(m.estado) + '<br><span class="note">' + esc(m.texto) + '</span></p>').join('');
       const opcoes = '<option value="">Selecione o teste</option>' + regs.map((r) => '<option value="' + esc(r.id) + '">' + esc((r.nome || 'Sem nome') + ' · ' + (r.status || 'pend')) + '</option>').join('');
       const lista = store.mensagens.map((m) => '<p>' + esc(m.status) + ' · ' + esc(m.destinatario) + ' · ' + esc(m.assunto) + (m.status === 'rascunho' ? ' <button type="button" class="btn" data-pronta="' + esc(m.id) + '">Marcar pronta</button>' : '') + '</p>').join('') || '<p class="note">Nenhuma mensagem interna.</p>';
-      host.innerHTML = '<div class="card" style="margin-top:12px"><h2>Plano em funcionamento</h2><p class="note">Estes módulos entram na operação do pacote. A maquete não substitui esta tela. <a href="paciente.html">Abrir a versão da paciente</a></p>' + cards + '<h2>Dashboard do gestor</h2><p>Testes ' + resumo.total + ' · não significativos ' + resumo.ok + ' · significativos ' + resumo.alt + ' · inconclusivos ' + resumo.inc + ' · rascunhos ' + resumo.pend + ' · referências abertas ' + resumo.referenciasAbertas + '</p><h2>Administração automática</h2><label class="f"><span>Teste</span><select class="in" data-prop>' + opcoes + '</select></label><p class="note" data-prop-txt>Escolha um teste para ver a proposta.</p><p><button type="button" class="btn primary" data-prop-go>Confirmar proposta</button></p><h2>Mensageria interna</h2><div class="grid"><label class="f"><span>Destinatário</span><input class="in" data-msg="destinatario" autocomplete="off"></label><label class="f"><span>Assunto</span><input class="in" data-msg="assunto" autocomplete="off"></label><label class="f" style="grid-column:1/-1"><span>Texto</span><input class="in" data-msg="corpo" autocomplete="off"></label></div><p><button type="button" class="btn primary" data-msg-go>Guardar rascunho</button></p>' + lista + '</div>';
+      host.innerHTML = '<div class="card" style="margin-top:12px"><h2>Plano em funcionamento</h2><p class="note">Estes módulos entram na operação do pacote. A maquete não substitui esta tela. <a href="paciente.html">Abrir a versão da paciente</a></p>' + cards + '<h2>Dashboard do gestor</h2><p>Testes ' + resumo.total + ' · não significativos ' + resumo.ok + ' · significativos ' + resumo.alt + ' · inconclusivos ' + resumo.inc + ' · rascunhos ' + resumo.pend + ' · referências abertas ' + resumo.referenciasAbertas + '</p><h2>Administração automática</h2><label class="f"><span>Teste</span><select class="in" data-prop>' + opcoes + '</select></label><p class="note" data-prop-txt>Escolha um teste para ver a proposta.</p><p><button type="button" class="btn primary" data-prop-go>Confirmar proposta</button></p><h2>Mensageria interna</h2><div class="grid"><label class="f"><span>Destinatário</span><input class="in" data-msg="destinatario" autocomplete="off"></label><label class="f"><span>Assunto</span><input class="in" data-msg="assunto" autocomplete="off"></label><label class="f" style="grid-column:1/-1"><span>Texto</span><input class="in" data-msg="corpo" autocomplete="off"></label></div><p><button type="button" class="btn primary" data-msg-go>Guardar rascunho</button> <button type="button" class="btn" data-msg-send>Enviar por e-mail</button></p><label class="f"><span>Tipo do e-mail</span><select class="in" data-msg-tipo><option value="agendamento">Agendamento</option><option value="questionario">Questionário de avaliação</option></select></label>' + lista + '</div>';
     }
     async function persist(row) {
       if (!ctx.db || !ctx.db()) return;
@@ -142,6 +142,21 @@
           draw();
         } catch (e) {
           msg('A proposta não foi gravada.', true);
+        }
+        return;
+      }
+      if (ev.target.closest('[data-msg-send]')) {
+        const tipo = host.querySelector('[data-msg-tipo]').value;
+        const para = host.querySelector('[data-msg="destinatario"]').value;
+        const mensagem = host.querySelector('[data-msg="assunto"]').value + '\n\n' + host.querySelector('[data-msg="corpo"]').value;
+        const quando = '';
+        if (!window.CelbreaMail || !ctx.token) { msg('O envio por e-mail ainda não está disponível nesta tela.', true); return; }
+        try {
+          const token = await ctx.token();
+          const res = await CelbreaMail.enviar(tipo, { para, mensagem, quando }, token);
+          msg(res.ok ? 'E-mail enviado.' : (res.motivo === 'resend_pendente' ? 'O envio espera a chave da Resend no servidor.' : 'Não foi possível enviar o e-mail.'), !res.ok);
+        } catch (e) {
+          msg('Não foi possível enviar o e-mail.', true);
         }
         return;
       }
